@@ -13,7 +13,10 @@ update_counts() =
   Dom.set_text(#number_left, Int.to_string(total - num_done))
 
 make_done(id: string) =
-  do Dom.add_class(#{id}, "done")
+  do if Dom.is_checked(Dom.select_inside(#{id}, Dom.select_raw("input"))) then Dom.add_class(#{id}, "done")
+  else
+    Dom.remove_class(#{id}, "done")
+
   update_counts()
 
 remove_item(id: string) =
