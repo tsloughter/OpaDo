@@ -3,25 +3,22 @@
  * {1 Network infrastructure}
  */
 
-done = 0
-
 /**
  * {1 User interface}
  */
+update_counts() =
+  num_done = Dom.length(Dom.select_class("done"))
+  total = Dom.length(Dom.select_class("todo"))
+  do Dom.set_text(#number_done, Int.to_string(num_done))
+  Dom.set_text(#number_left, Int.to_string(total - num_done))
 
 make_done(id: string) =
   do Dom.add_class(#{id}, "done")
-  num_done = Dom.length(Dom.select_class("done"))
-  total = Dom.length(Dom.select_class("todo"))
-  do Dom.set_text(#number_done, Int.to_string(num_done))
-  Dom.set_text(#number_left, Int.to_string(total - num_done))
+  update_counts()
 
 remove_item(id: string) =
   do Dom.remove(#{id})
-  num_done = Dom.length(Dom.select_class("done"))
-  total = Dom.length(Dom.select_class("todo"))
-  do Dom.set_text(#number_done, Int.to_string(num_done))
-  Dom.set_text(#number_left, Int.to_string(total - num_done))
+  update_counts()
 
 add_todo(x: string) =
   id = Random.string(8)
@@ -37,10 +34,8 @@ add_todo(x: string) =
            </div>
          </div></li>
   do Dom.transform([#todo_list +<- line ])
-  num_done = Dom.length(Dom.select_class("done"))
-  total = Dom.length(Dom.select_class("todo"))
-  do Dom.set_text(#number_left, Int.to_string(total - num_done))
-  Dom.scroll_to_bottom(#todo_list)
+  do Dom.scroll_to_bottom(#todo_list)
+  update_counts()
 
 start() =
   <body>
