@@ -42,6 +42,7 @@ add_todo(x: string) =
          </div></li>
   do Dom.transform([#todo_list +<- line ])
   do Dom.scroll_to_bottom(#todo_list)
+  do Dom.set_value(#new_todo, "")
   update_counts()
 
 start() =
