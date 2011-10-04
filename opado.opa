@@ -23,6 +23,10 @@ remove_item(id: string) =
   do Dom.remove(#{id})
   update_counts()
 
+remove_all_done() =
+  do Dom.remove(Dom.select_parent_one(Dom.select_class("done")))
+  update_counts()
+
 add_todo(x: string) =
   id = Random.string(8)
   li_id = Random.string(8)
@@ -60,7 +64,7 @@ start() =
           <span class="word">items</span> left.
         </span>
         <span class="todo_clear">
-          <a href="#">
+          <a href="#" onclick={_ -> remove_all_done() }>
             Clear <span id=#number_done class="number-done">0</span>
             completed <span class="word-done">items</span>
           </a>
