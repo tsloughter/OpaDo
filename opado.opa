@@ -46,7 +46,6 @@ add_todo(x: string) =
   update_counts()
 
 start() =
-  <body>
   <div id="todoapp">
     <div class="title">
       <h1>Todos</h1>
@@ -73,7 +72,6 @@ start() =
       </div>
     </div>
   </div>
-  </body>
 
 /**
  * {1 Application}
