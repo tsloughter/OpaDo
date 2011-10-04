@@ -11,11 +11,17 @@ done = 0
 
 make_done(id: string) =
   do Dom.add_class(#{id}, "done")
-  do Dom.set_text(#number_done, Int.to_string(String.to_int(Dom.get_text(#number_done)) + 1))
-  Dom.set_text(#number_left, Int.to_string(String.to_int(Dom.get_text(#number_left)) - 1))
+  num_done = Dom.length(Dom.select_class("done"))
+  total = Dom.length(Dom.select_class("todo"))
+  do Dom.set_text(#number_done, Int.to_string(num_done))
+  Dom.set_text(#number_left, Int.to_string(total - num_done))
 
 remove_item(id: string) =
-  Dom.remove(#{id})
+  do Dom.remove(#{id})
+  num_done = Dom.length(Dom.select_class("done"))
+  total = Dom.length(Dom.select_class("todo"))
+  do Dom.set_text(#number_done, Int.to_string(num_done))
+  Dom.set_text(#number_left, Int.to_string(total - num_done))
 
 add_todo(x: string) =
   id = Random.string(8)
@@ -30,9 +36,11 @@ add_todo(x: string) =
              <input class="todo-input" type="text" value="" />
            </div>
          </div></li>
-  do Dom.set_text(#number_left, Int.to_string(String.to_int(Dom.get_text(#number_left)) + 1))
-  do Dom.scroll_to_bottom(#todo_list)
-  Dom.transform([#todo_list +<- line ])
+  do Dom.transform([#todo_list +<- line ])
+  num_done = Dom.length(Dom.select_class("done"))
+  total = Dom.length(Dom.select_class("todo"))
+  do Dom.set_text(#number_left, Int.to_string(total - num_done))
+  Dom.scroll_to_bottom(#todo_list)
 
 start() =
   <body>
