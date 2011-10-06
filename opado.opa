@@ -1,7 +1,8 @@
+type todo_item = { id : string
+                 ; value : string
+                 }
 
-/**
- * {1 Network infrastructure}
- */
+db /todo_items : stringmap(todo_item)
 
 /**
  * {1 User interface}
@@ -20,29 +21,37 @@ make_done(id: string) =
   update_counts()
 
 remove_item(id: string) =
-  do Dom.remove(#{id})
+  do Dom.remove(Dom.select_parent_one(#{id}))
+  do Db.remove(@/todo_items[id])
   update_counts()
 
 remove_all_done() =
-  do Dom.remove(Dom.select_parent_one(Dom.select_class("done")))
-  update_counts()
+  Dom.iter(x -> remove_item(Dom.get_id(x)), Dom.select_class("done"))
 
 add_todo(x: string) =
   id = Random.string(8)
-  li_id = Random.string(8)
-  line = <li id={ li_id }><div class="todo" id={ id }>
+  do /todo_items[id] <- { id=id value=x }
+  add_todo_to_page(id, x)
+
+add_todos() =
+  items = /todo_items
+  StringMap.iter((x, y -> add_todo_to_page(x, y.value)), items)
+
+add_todo_to_page(id: string, value: string) =
+  line = <li><div class="todo" id={ id }>
            <div class="display">
              <input class="check" type="checkbox" onclick={_ -> make_done(id) } />
-               <div class="todo_content">{ x }</div>
-               <span class="todo_destroy" onclick={_ -> remove_item(li_id) }></span>
+               <div class="todo_content">{ value }</div>
+               <span class="todo_destroy" onclick={_ -> remove_item(id) }></span>
            </div>
            <div class="edit">
              <input class="todo-input" type="text" value="" />
            </div>
          </div></li>
-  do Dom.transform([#todo_list +<- line ])
+  do Dom.transform([#todo_list +<- line])
   do Dom.scroll_to_bottom(#todo_list)
   do Dom.set_value(#new_todo, "")
+
   update_counts()
 
 start() =
@@ -55,7 +64,7 @@ start() =
         <input id=#new_todo placeholder="What needs to be done?" type="text" onnewline={_ -> add_todo(Dom.get_value(#new_todo)) } />
       </div>
       <div id=#todos>
-        <ul id=#todo_list></ul>
+        <ul id=#todo_list onready={_ -> add_todos() } ></ul>
       </div>
 
       <div id="todo_stats">
