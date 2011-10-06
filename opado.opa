@@ -1,7 +1,14 @@
-type todo_item = { id : string
+/**
+ * Data types
+ */
+type todo_item = { user_id : string
                  ; value : string
+                 ; created_at : string
                  }
 
+/**
+ * todo_items database, a string map of todo items
+ */
 db /todo_items : stringmap(todo_item)
 
 /**
@@ -30,7 +37,7 @@ remove_all_done() =
 
 add_todo(x: string) =
   id = Random.string(8)
-  do /todo_items[id] <- { id=id value=x }
+  do /todo_items[id] <- { value=x user_id="" created_at="" }
   add_todo_to_page(id, x)
 
 add_todos() =
