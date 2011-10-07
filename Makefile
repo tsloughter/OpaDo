@@ -1,6 +1,6 @@
-NAME = opado.exe
+NAME = main.exe
 
-SRC  = opado.opa
+SRC  = src/main.opa
 
 all: $(NAME)
 
@@ -8,5 +8,5 @@ $(NAME):
 	opa $(SRC)
 
 clean:
-	rm -f $(NAME)
+	rm -f src/$(NAME)
 	rm -rf _build

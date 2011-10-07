@@ -1,3 +1,5 @@
+package opado.main
+
 /**
  * Data types
  */
@@ -61,7 +63,7 @@ add_todo_to_page(id: string, value: string) =
 
   update_counts()
 
-start() =
+mainpage() =
   <div id="todoapp">
     <div class="title">
       <h1>Todos</h1>
@@ -96,6 +98,11 @@ start() =
 /**
  * Main entry point.
  */
-server = Server.one_page_bundle("Todo",
-       [@static_resource_directory("resources")],
-       ["resources/todos.css"], start)
+
+start(uri) =
+  match uri with
+    | {path = [] ... } -> Resource.styled_page("Main", ["/resources/todos.css"], mainpage())
+    | {path = _ ...}   -> Resource.styled_page("Main", ["/resources/todos.css"], mainpage())
+
+server = Server.of_bundle([@static_include_directory("resources")])
+server = Server.simple_dispatch(start)
