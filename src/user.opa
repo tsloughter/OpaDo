@@ -62,14 +62,16 @@ User = {{
   @private state = UserContext.make({ unlogged } : User.status)
 
   create(username, password) =
-    match ?/users[username] with
+    do match ?/users[username] with
       | {none} ->
           user : User.t =
             { username=username ;
               fullname="" ;
               password = Crypto.Hash.sha2(password) }
           /users[username] <- user
+
       | _ -> void
+    Client.goto("/login")
 
   get_status() =
     UserContext.execute((a -> a), state)
@@ -86,7 +88,7 @@ User = {{
      | {some = u} -> if u.password == Crypto.Hash.sha2(password) then
                        UserContext.change(( _ -> { logged = User_data.mk_ref(login) }), state)
      | _ -> void
-    Client.reload()
+    Client.goto("/todos")
 
   logout() =
     do UserContext.change(( _ -> { unlogged }), state)
@@ -104,6 +106,7 @@ User = {{
          <h1>Sign Up</h1>
        </div>
        <div class="content">
+         <form onsubmit={_ -> create(Dom.get_value(#username), Dom.get_value(#password)) }>
          <div id=#create_todo>
            <input id=#username class="login_input" placeholder="New Username..." type="text" />
          </div>
@@ -112,7 +115,9 @@ User = {{
            <input id=#password class="login_input" placeholder="Password..." type="password" />
          </div>
 
-         <a href="#" class="btn large primary" onclick={_ -> create(Dom.get_value(#username), Dom.get_value(#password)) }>Create</a> or <a href="/login">Login here</a>
+         <button type=submit class="btn large primary" onclick={_ -> do create(Dom.get_value(#username), Dom.get_value(#password))
+                                                                	login(Dom.get_value(#username), Dom.get_value(#password)) }>Create</button> or <a href="/login">Login here</a>
+	 </form>
        </div>
      </div>
 
@@ -134,8 +139,8 @@ User = {{
         Username : <input id=#{username_id}
                            onchange={_ -> User_data.save(r, {user with username = Dom.get_value(#{username_id})})}
                            value={user.username} /><br />
-        Fullname   :  <input id=#{fullname_id} 
-                           onchange={_ -> User_data.save(r, {user with fullname = Dom.get_value(#{fullname_id})})}  
+        Fullname   :  <input id=#{fullname_id}
+                           onchange={_ -> User_data.save(r, {user with fullname = Dom.get_value(#{fullname_id})})}
                         value={user.fullname} />
       </p>
     else
@@ -154,12 +159,12 @@ User = {{
      | { some = _ } -> Resource.html("User module", <h1>Module User</h1><>This the public profil of {login}, this page is under construction</>)
 
   loginbox() : xhtml =
-    user_opt = 
-       match get_status() with 
+    user_opt =
+       match get_status() with
          | { logged = u } -> Option.some(<>{User_data.ref_to_string(u)} => <a onclick={_ -> logout()}>Logout</a></>)
          | _ -> Option.none
 
-    WLoginbox.html(WLoginbox.default_config, "login_box", login, user_opt) 
+    WLoginbox.html(WLoginbox.default_config, "login_box", login, user_opt)
 
   resource : Parser.general_parser(http_request -> resource) =
     parser
