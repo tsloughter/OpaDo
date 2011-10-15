@@ -1,6 +1,7 @@
 package opado.main
 
 import opado.user
+import opado.admin
 import opado.todo
 
 urls : Parser.general_parser(http_request -> resource) =
@@ -9,6 +10,7 @@ urls : Parser.general_parser(http_request -> resource) =
   | "/todos" result={Todo.resource} -> result
   | "/user" result={User.resource} -> result
   | "/login" result={User.resource} -> result
+  | "/admin" result={Admin.resource} -> result
   | (.*) result={Todo.resource} -> result
 
 server = Server.of_bundle([@static_resource_directory("resources")])

@@ -1,6 +1,6 @@
 NAME = main.exe
 
-SRC  = src/todo.opa src/user.opa src/main.opa
+SRC  = src/todo.opa src/user.opa src/admin.opa src/main.opa
 
 all: $(NAME)
 
