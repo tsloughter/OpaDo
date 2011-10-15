@@ -44,7 +44,6 @@ User_data = {{
     ?/users[ref]
 }}
 
-
 User = {{
 
   @private state = UserContext.make({ unlogged } : User.status)
@@ -72,11 +71,11 @@ User = {{
   login(login, password) =
     useref = User_data.mk_ref(login)
     user = User_data.get(useref)
-    do match user with
+    match user with
      | {some = u} -> if u.password == Crypto.Hash.sha2(password) then
-                       UserContext.change(( _ -> { logged = User_data.mk_ref(login) }), state)
+                       do UserContext.change(( _ -> { logged = User_data.mk_ref(login) }), state)
+                       Client.goto("/todos")
      | _ -> void
-    Client.goto("/todos")
 
   logout() =
     do UserContext.change(( _ -> { unlogged }), state)
