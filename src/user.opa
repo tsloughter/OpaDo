@@ -71,11 +71,12 @@ User = {{
   login(login, password) =
     useref = User_data.mk_ref(login)
     user = User_data.get(useref)
-    match user with
+    do match user with
      | {some = u} -> if u.password == Crypto.Hash.sha2(password) then
-                       do UserContext.change(( _ -> { logged = User_data.mk_ref(login) }), state)
-                       Client.goto("/todos")
+                       UserContext.change(( _ -> { logged = User_data.mk_ref(login) }), state)
+
      | _ -> void
+     Client.goto("/todos")
 
   logout() =
     do UserContext.change(( _ -> { unlogged }), state)
