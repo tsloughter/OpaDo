@@ -45,18 +45,6 @@ User_data = {{
 }}
 
 
-init_user()=
-  match ?/users["admin"] with
-    | {none} ->
-        admin : User.t =
-          { username="admin"
-            fullname="Administrator" ;
-            password = Crypto.Hash.sha2("admin") }
-        /users["admin"] <- admin
-    | _ -> void
-
-do init_user()
-
 User = {{
 
   @private state = UserContext.make({ unlogged } : User.status)
