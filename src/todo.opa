@@ -80,7 +80,8 @@ Todo = {{
        <a onclick={_ -> User.logout()}>Logout</a>
        <div id="todoapp">
          <div class="title">
-           <h1>Todos</h1>
+           <h1>OpaDo Beta</h1>
+           <span style="font-size=10px">Note: No guarentee your data will not be lost. This is just a demo for now.</span>
          </div>
          <div class="content">
            <div id=#create_todo>

@@ -10,6 +10,7 @@ import stdlib.widgets.loginbox
 import stdlib.crypto
 import stdlib.web.client
 import stdlib.core.web.core
+import stdlib.widgets.formbuilder
 import stdlib.themes.bootstrap
 
 // DATA
@@ -108,6 +109,28 @@ User = {{
 	 </form>
        </div>
      </div>
+
+  process(_) =
+        Log.notice("form", "user added")
+
+  new2() =
+    username = WFormBuilder.mk_field("Username:", WFormBuilder.text_field)
+    passwd1  = WFormBuilder.mk_field("Password:", WFormBuilder.passwd_field)
+    passwd2  = WFormBuilder.mk_field("Password again:", WFormBuilder.passwd_field)
+
+    fields = <div id="todoapp">
+        <div class="title">
+          <h1>Sign Up</h1>
+        </div>
+        <div class="content">
+        {WFormBuilder.field_html(WFormBuilder.add_validator(username, WFormBuilder.empty_validator), WFormBuilder.default_field_builder, WFormBuilder.empty_style)}
+        {WFormBuilder.field_html(passwd1, WFormBuilder.default_field_builder, WFormBuilder.empty_style)}
+        {WFormBuilder.field_html(passwd2, WFormBuilder.default_field_builder, WFormBuilder.empty_style)}
+        <input type="submit" value="Register" />
+      </div>
+      </div>
+
+    WFormBuilder.form_html("register", {Basic}, fields, process)
 
   edit() =
     if User.is_logged() then
