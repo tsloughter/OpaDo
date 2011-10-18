@@ -108,6 +108,7 @@ User = {{
                                                                 	login(Dom.get_value(#username), Dom.get_value(#password)) }>Create</button> or <a href="/login">Login here</a>
 	 </form>
        </div>
+       <div style="margin-top:10px;">Get the source <a href="https://github.com/tsloughter/opado">here</a>. And read about the implementation at <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a></div>
      </div>
 
   process(_) =
