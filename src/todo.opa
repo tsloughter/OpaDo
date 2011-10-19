@@ -22,9 +22,7 @@ Todo = {{
    make_done(id: string) =
      username = User.get_username()
      do if Dom.is_checked(Dom.select_inside(#{id}, Dom.select_raw("input"))) then
-       items = /todo_items[username]
-       item = Option.get(StringMap.get(id, items))
-       do /todo_items[username] <- StringMap.add(id, {item with done=true}, items)
+       do db_make_done(username, id)
        Dom.add_class(#{id}, "done")
      else
        Dom.remove_class(#{id}, "done")
@@ -32,24 +30,36 @@ Todo = {{
      update_counts()
 
    @async
+   db_make_done(username: string, id: string) =
+       items = /todo_items[username]
+       item = Option.get(StringMap.get(id, items))
+       /todo_items[username] <- StringMap.add(id, {item with done=true}, items)
+
    remove_item(id: string) =
+     do db_remove_item(id)
+     do Dom.remove(Dom.select_parent_one(#{id}))
+     update_counts()
+
+   @async
+   db_remove_item(id: string) =
      username = User.get_username()
      items = /todo_items[username]
-     do Dom.remove(Dom.select_parent_one(#{id}))
-     do /todo_items[username] <- StringMap.remove(id, items)
-     update_counts()
+     /todo_items[username] <- StringMap.remove(id, items)
 
    @async
    remove_all_done() =
      Dom.iter(x -> remove_item(Dom.get_id(x)), Dom.select_class("done"))
 
-   @async
    add_todo(x: string) =
      id = Dom.fresh_id()
+     do db_add_todo(id, x)
+     add_todo_to_page(id, x, false)
+
+   @async
+   db_add_todo(id: string, x: string) =
      username = User.get_username()
      items = /todo_items[username]
-     do /todo_items[username] <- StringMap.add(id, { value=x done=false created_at="" }, items)
-     add_todo_to_page(id, x, false)
+     /todo_items[username] <- StringMap.add(id, { value=x done=false created_at="" }, items)
 
    add_todos() =
      username = User.get_username()
