@@ -31,6 +31,7 @@ Todo = {{
 
      update_counts()
 
+   @async
    remove_item(id: string) =
      username = User.get_username()
      items = /todo_items[username]
@@ -38,9 +39,11 @@ Todo = {{
      do /todo_items[username] <- StringMap.remove(id, items)
      update_counts()
 
+   @async
    remove_all_done() =
      Dom.iter(x -> remove_item(Dom.get_id(x)), Dom.select_class("done"))
 
+   @async
    add_todo(x: string) =
      id = Dom.fresh_id()
      username = User.get_username()
