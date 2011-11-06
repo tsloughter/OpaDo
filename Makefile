@@ -4,9 +4,9 @@ SRC  = src/todo.opa src/user.opa src/admin.opa src/main.opa
 
 all: $(NAME)
 
-$(NAME):
-	opa $(SRC)
+$(NAME): $(SRC)
+	opa $(SRC) -o $(NAME)
 
 clean:
-	rm -f src/$(NAME)
+	rm -f $(NAME)
 	rm -rf _build
