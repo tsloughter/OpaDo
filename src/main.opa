@@ -5,7 +5,6 @@ import opado.admin
 import opado.todo
 
 urls : Parser.general_parser(http_request -> resource) =
-  do Resource.register_external_js("/resources/google_analytics.js")
   parser
   | {Rule.debug_parse_string(s -> Log.notice("URL",s))} Rule.fail -> error("")
   | "/todos" result={Todo.resource} -> result
