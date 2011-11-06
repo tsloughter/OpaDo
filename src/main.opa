@@ -5,6 +5,7 @@ import opado.admin
 import opado.todo
 
 urls : Parser.general_parser(http_request -> resource) =
+  do Resource.register_external_js("/resources/google_analytics.js")
   parser
   | {Rule.debug_parse_string(s -> Log.notice("URL",s))} Rule.fail -> error("")
   | "/todos" result={Todo.resource} -> result
@@ -13,5 +14,7 @@ urls : Parser.general_parser(http_request -> resource) =
   | "/admin" result={Admin.resource} -> result
   | (.*) result={Todo.resource} -> result
 
+do Resource.register_external_js("/resources/js/google_analytics.js")
 server = Server.of_bundle([@static_resource_directory("resources")])
 server = Server.make(urls)
+
