@@ -20,17 +20,17 @@ Todo = {{
      Dom.set_text(#number_left, Int.to_string(total - num_done))
 
    make_done(id: string) =
-     username = User.get_username()
      do if Dom.is_checked(Dom.select_inside(#{id}, Dom.select_raw("input"))) then
-       do db_make_done(username, id)
+       do db_make_done(id)
        Dom.add_class(#{id}, "done")
      else
        Dom.remove_class(#{id}, "done")
 
      update_counts()
 
-   @async
-   db_make_done(username: string, id: string) =
+   @publish @async
+   db_make_done(id: string) =
+       username = User.get_username()
        items = /todo_items[username]
        item = Option.get(StringMap.get(id, items))
        /todo_items[username] <- StringMap.add(id, {item with done=true}, items)
@@ -40,7 +40,7 @@ Todo = {{
      do Dom.remove(Dom.select_parent_one(#{id}))
      update_counts()
 
-   @async
+   @publish @async
    db_remove_item(id: string) =
      username = User.get_username()
      items = /todo_items[username]
@@ -55,12 +55,13 @@ Todo = {{
      do db_add_todo(id, x)
      add_todo_to_page(id, x, false)
 
-   @async
+   @publish @async
    db_add_todo(id: string, x: string) =
      username = User.get_username()
      items = /todo_items[username]
      /todo_items[username] <- StringMap.add(id, { value=x done=false created_at="" }, items)
 
+   @publish
    add_todos() =
      username = User.get_username()
      items = /todo_items[username]
