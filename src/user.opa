@@ -6,6 +6,7 @@
 **/
 
 package opado.user
+
 import stdlib.widgets.loginbox
 import stdlib.crypto
 import stdlib.web.client
@@ -18,157 +19,170 @@ import stdlib.themes.bootstrap
 @abstract type User.password = string
 @abstract type User.ref = string
 
-type User.t =
-  {
-    username : string
-    fullname : string
-    password : User.password
-  }
+type User.t = {string username, string fullname, User.password password}
 
-type User.status = { logged : User.ref } / { unlogged }
+type User.status = {User.ref logged} or {unlogged}
+
 type User.info = UserContext.t(User.status)
 type User.map('a) = ordered_map(User.ref, 'a, String.order)
 
-db /users : User.map(User.t)
+database User.map(User.t) /users
 
-User_data = {{
-  mk_ref( login : string ) : User.ref =
-    String.to_lower(login)
+module User_data {
+    function User.ref mk_ref(string login){
+        String.to_lower(login)
+    }
+    function string ref_to_string(User.ref login){
+        login
+    }
+    function void save(User.ref ref,User.t user){
+        @/users[ref] <- user
+    }
+    function option(User.t) get(User.ref ref){
+        ?/users[ref]
+    }
+}
 
-  ref_to_string( login : User.ref ) : string =
-    login
+module User {
+    private state = UserContext.make((User.status) { unlogged })
 
-  save( ref : User.ref, user : User.t ) : void =
-    /users[ref] <- user
+    function create(username,password){
+        match (?/users[username]) {
+            case { none }:
+              user =
+                  (User.t) { ~username,
+                           fullname : "",
+                           password : Crypto.Hash.sha2(password) };
+              @/users[username] <- user
+            default: void
+            };
+        Client.goto("/login")
+    }
+    function get_status(){
+        UserContext.execute((function(a){a}), state)
+    }
+    function is_logged(){
+        match (get_status()) {
+        case { logged : _ }: true
+        case { unlogged }: false
+        }
+    }
+    function login(login,password){
+        useref = User_data.mk_ref(login);
+        user = User_data.get(useref);
+        match (user) {
+        case { some : u }:
+           if (u.password == Crypto.Hash.sha2(password)) {
+               UserContext.change(function(_){
+                   { logged :User_data.mk_ref(login) }
+                 },state)
+           }
+        default: void
+        };
+        Client.goto("/todos")
+    }
+    function logout(){
+        UserContext.change((function(_){{ unlogged }}), state);
+        Client.reload()
+    }
+    function start(){
+        if (User.is_logged()) {
+            Resource.default_redirection_page("/todos")
+        } else {
+            Resource.styled_page("Login", ["/resources/todos.css"],
+              <div id="todoapp"><div class="title"><h1>Login</h1></div><div class="content">{loginbox()}</div><div id="todo_stats">No account? <a href="/user/new" class="btn large primary">Sign Up</a></div></div>)
+        }
+    }
 
-  get( ref : User.ref ) : option(User.t) =
-    ?/users[ref]
-}}
+    function new(){
+         <div id="todoapp">
+           <div class="title">
+             <h1>Sign Up</h1>
+           </div>
+           <div class="content">
+             <form onsubmit={function(_){create(Dom.get_value(#username),Dom.get_value(#password))}}>
+             <div id=#create_todo>
+               <input id=#username class="login_input" placeholder="New Username..." type="text" />
+             </div>
 
-User = {{
+             <div id=#create_todo>
+               <input id=#password class="login_input" placeholder="Password..." type="password" />
+             </div>
 
-  @private state = UserContext.make({ unlogged } : User.status)
-
-  create(username, password) =
-    do match ?/users[username] with
-      | {none} ->
-          user : User.t =
-            { username=username ;
-              fullname="" ;
-              password = Crypto.Hash.sha2(password) }
-          /users[username] <- user
-
-      | _ -> void
-    Client.goto("/login")
-
-  get_status() =
-    UserContext.execute((a -> a), state)
-
-  is_logged() =
-    match get_status() with
-     | { logged = _ } -> true
-     | { unlogged } -> false
-
-  login(login, password) =
-    useref = User_data.mk_ref(login)
-    user = User_data.get(useref)
-    do match user with
-     | {some = u} -> if u.password == Crypto.Hash.sha2(password) then
-                       UserContext.change(( _ -> { logged = User_data.mk_ref(login) }), state)
-
-     | _ -> void
-     Client.goto("/todos")
-
-  logout() =
-    do UserContext.change(( _ -> { unlogged }), state)
-    Client.reload()
-
-  start() =
-    if User.is_logged() then
-      Resource.default_redirection_page("/todos")
-    else
-      Resource.styled_page("Login", ["/resources/todos.css"], <div id="todoapp"><div class="title"><h1>Login</h1></div><div class="content">{loginbox()}</div><div id="todo_stats">No account? <a href="/user/new" class="btn large primary">Sign Up</a></div></div>)
-
-   new() =
-     <div id="todoapp">
-       <div class="title">
-         <h1>Sign Up</h1>
-       </div>
-       <div class="content">
-         <form onsubmit={_ -> create(Dom.get_value(#username), Dom.get_value(#password)) }>
-         <div id=#create_todo>
-           <input id=#username class="login_input" placeholder="New Username..." type="text" />
+             <button type=submit class="btn large primary" onclick={
+                     function(_){
+                         create(Dom.get_value(#username),Dom.get_value(#password));
+                         login(Dom.get_value(#username), Dom.get_value(#password))
+                     }}>Create</button> or <a href="/login">Login here</a>
+             </form>
+           </div>
+           <div style="margin-top:10px;">Get the source <a href="https://github.com/tsloughter/opado">here</a>. And read about the implementation at <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a>, <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">on adding Googlel Analytics</a>, <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">on vastling improving performance.</></div>
          </div>
+    }
 
-         <div id=#create_todo>
-           <input id=#password class="login_input" placeholder="Password..." type="password" />
-         </div>
-
-         <button type=submit class="btn large primary" onclick={_ -> do create(Dom.get_value(#username), Dom.get_value(#password))
-                                                                	login(Dom.get_value(#username), Dom.get_value(#password)) }>Create</button> or <a href="/login">Login here</a>
-	 </form>
-       </div>
-       <div style="margin-top:10px;">Get the source <a href="https://github.com/tsloughter/opado">here</a>. And read about the implementation at <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a>, <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">on adding Googlel Analytics</a>, <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">on vastling improving performance.</></div>
-     </div>
-
-  process(_) =
-        Log.notice("form", "user added")
-
-  edit() =
-    if User.is_logged() then
-      Resource.html("User module", <h1>Module User</h1><>Under construction</>)
-    else
-      start()
-
-  admin() =
-    if User.is_logged() then
-      username_id = Dom.fresh_id()
-      fullname_id = Dom.fresh_id()
-      ref = get_status()
-      match ref with
-         | {unlogged} -> <>Error...</>
-         | {logged=r} -> user = Option.get(User_data.get(r))
-      <p>
-        Username : <input id=#{username_id}
-                           onchange={_ -> User_data.save(r, {user with username = Dom.get_value(#{username_id})})}
+    function process(_){Log.notice("form", "user added")}
+    function edit(){
+        if(User.is_logged()){
+            Resource.html("User module",<><h1>Module User</h1>Under construction</>)
+        } else start()
+    }
+    function admin(){
+        if(User.is_logged()){
+            username_id = Dom.fresh_id();
+            fullname_id = Dom.fresh_id();
+            ref = get_status();
+            match (ref) {
+            case { unlogged }: <>Error...</>
+            case { logged : r }:
+                user = Option.get(User_data.get(r));
+                <p>
+                  Username : <input id=#{username_id}
+                           onchange={function(_){ 
+                              User_data.save(r, {user with username : Dom.get_value(#{username_id})})
+                           }}
                            value={user.username} /><br />
-        Fullname   :  <input id=#{fullname_id}
-                           onchange={_ -> User_data.save(r, {user with fullname = Dom.get_value(#{fullname_id})})}
-                        value={user.fullname} />
-      </p>
-    else
-      loginbox()
+                  Fullname   :  <input id=#{fullname_id}
+                           onchange={function(_){ User_data.save(r, {user with fullname : Dom.get_value(#{fullname_id})})
+                           }}
+                           value={user.fullname} />
+                </p>
+            }
+        } else loginbox()
+    }
+    function get_username(){
+        ref = User.get_status();
+        match (ref) {
+        case { unlogged }: "error"
+        case { logged : r }:
+            user = Option.get(User_data.get(r));
+            user.username
+        }
+    }
 
-  get_username() =
-    ref = User.get_status()
-    match ref with
-      | {unlogged} -> "error"
-      | {logged=r} -> user = Option.get(User_data.get(r))
-                      user.username
-
-  view(login : string) =
-    match User_data.get(User_data.mk_ref(login)) with
-     | { none } -> Resource.html("User module", <h1>Module User</h1><>Error, the user {login} does'nt exist</>)
-     | { some = _ } -> Resource.html("User module", <h1>Module User</h1><>This the public profil of {login}, this page is under construction</>)
-
-  loginbox() : xhtml =
-    user_opt =
-       match get_status() with
-         | { logged = u } -> Option.some(<>{User_data.ref_to_string(u)} => <a onclick={_ -> logout()}>Logout</a></>)
-         | _ -> Option.none
-
-    WLoginbox.html(WLoginbox.default_config, "login_box", login, user_opt)
-
-  resource : Parser.general_parser(http_request -> resource) =
-    parser
-    | "/new" ->
-      _req -> Resource.styled_page("New User", ["/resources/todos.css"], new())
-    | "/edit" ->
-      _req -> edit()
-    | "/view/" login=(.*) ->
-      _req -> view(Text.to_string(login))
-    | .* ->
-      _req -> start()
-
-}}
-
+    function view(string login){
+        match (User_data.get(User_data.mk_ref(login))) {
+        case { none }:
+            Resource.html("User module", <h1>Module User</h1><>Error, the user {login} does'nt exist</>)
+        case { some : _ }:
+            Resource.html("User module", <h1>Module User</h1><>This the public profil of {login}, this page is under construction</>)
+        }
+    }
+    function xhtml loginbox(){
+        user_opt = match (get_status()) {
+        case { logged : u }:
+            Option.some(<>{User_data.ref_to_string(u)} => 
+               <a onclick={(function(_){logout()})}>Logout</a></>
+            )
+        default: Option.none
+        };
+        WLoginbox.html(WLoginbox.default_config,"login_box", login, user_opt)
+    }
+    resource =
+       (Parser.general_parser((http_request -> resource))) parser
+       | "/new" -> function(_req){
+           Resource.styled_page("New User",["/resources/todos.css"],new())
+       }
+       | "/edit" -> function(_req){edit()}
+       | "/view/" login = (.*) -> function(_req){view(Text.to_string(login))}
+       | .* -> function(_req){start()}
+}

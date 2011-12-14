@@ -4,16 +4,19 @@ import opado.user
 import opado.admin
 import opado.todo
 
-urls : Parser.general_parser(http_request -> resource) =
-  parser
-  | {Rule.debug_parse_string(s -> Log.notice("URL",s))} Rule.fail -> error("")
-  | "/todos" result={Todo.resource} -> result
-  | "/user" result={User.resource} -> result
-  | "/login" result={User.resource} -> result
-  | "/admin" result={Admin.resource} -> result
-  | (.*) result={Todo.resource} -> result
+function with_request(f){ f(ThreadContext.get({current}).request ? error("no request")) }
 
-do Resource.register_external_js("/resources/js/google_analytics.js")
-server = Server.of_bundle([@static_resource_directory("resources")])
-server = Server.make(urls)
+urls = parser
+    {Rule.debug_parse_string((function(s){Log.notice("URL", s)}))}
+       Rule.fail -> error("")
+    | "/todos" result={Todo.resource}  -> with_request(result)
+    | "/user"  result={User.resource}  -> with_request(result)
+    | "/login" result={User.resource}  -> with_request(result)
+    | "/admin" result={Admin.resource} -> with_request(result)
+    | (.*)     result={Todo.resource}  -> with_request(result)
 
+Server.start(Server.http,
+        [{resources:@static_resource_directory("resources")},
+         {register:["/resources/js/google_analytics.js"]},
+         {custom:urls}]
+)
