@@ -32,12 +32,15 @@ module User_data {
     function User.ref mk_ref(string login){
         String.to_lower(login)
     }
+
     function string ref_to_string(User.ref login){
         login
     }
+
     function void save(User.ref ref,User.t user){
         @/users[ref] <- user
     }
+
     function option(User.t) get(User.ref ref){
         ?/users[ref]
     }
@@ -46,7 +49,7 @@ module User_data {
 module User {
     private state = UserContext.make((User.status) { unlogged })
 
-    function create(username,password){
+    function create(username,password) {
         match (?/users[username]) {
             case { none }:
               user =
@@ -58,16 +61,19 @@ module User {
             };
         Client.goto("/login")
     }
-    function get_status(){
+
+    function get_status() {
         UserContext.execute((function(a){a}), state)
     }
-    function is_logged(){
+
+    function is_logged() {
         match (get_status()) {
         case { logged : _ }: true
         case { unlogged }: false
         }
     }
-    function login(login,password){
+
+    function login(login,password) {
         useref = User_data.mk_ref(login);
         user = User_data.get(useref);
         match (user) {
@@ -81,11 +87,13 @@ module User {
         };
         Client.goto("/todos")
     }
-    function logout(){
+
+    function logout() {
         UserContext.change((function(_){{ unlogged }}), state);
         Client.reload()
     }
-    function start(){
+
+    function start() {
         if (User.is_logged()) {
             Resource.default_redirection_page("/todos")
         } else {
@@ -120,13 +128,19 @@ module User {
          </div>
     }
 
-    function process(_){Log.notice("form", "user added")}
-    function edit(){
-        if(User.is_logged()){
-            Resource.html("User module",<><h1>Module User</h1>Under construction</>)
-        } else start()
+    function process(_) {
+        Log.notice("form", "user added")
     }
-    function admin(){
+
+    function edit() {
+        if(User.is_logged()) {
+            Resource.html("User module",<><h1>Module User</h1>Under construction</>)
+        } else {
+            start()
+        }
+    }
+
+    function admin() {
         if(User.is_logged()){
             username_id = Dom.fresh_id();
             fullname_id = Dom.fresh_id();
@@ -137,7 +151,7 @@ module User {
                 user = Option.get(User_data.get(r));
                 <p>
                   Username : <input id=#{username_id}
-                           onchange={function(_){ 
+                           onchange={function(_){
                               User_data.save(r, {user with username : Dom.get_value(#{username_id})})
                            }}
                            value={user.username} /><br />
@@ -147,9 +161,12 @@ module User {
                            value={user.fullname} />
                 </p>
             }
-        } else loginbox()
+        } else {
+            loginbox()
+        }
     }
-    function get_username(){
+
+    function get_username() {
         ref = User.get_status();
         match (ref) {
         case { unlogged }: "error"
@@ -159,7 +176,7 @@ module User {
         }
     }
 
-    function view(string login){
+    function view(string login) {
         match (User_data.get(User_data.mk_ref(login))) {
         case { none }:
             Resource.html("User module", <h1>Module User</h1><>Error, the user {login} does'nt exist</>)
@@ -167,22 +184,24 @@ module User {
             Resource.html("User module", <h1>Module User</h1><>This the public profil of {login}, this page is under construction</>)
         }
     }
-    function xhtml loginbox(){
+
+    function xhtml loginbox() {
         user_opt = match (get_status()) {
         case { logged : u }:
-            Option.some(<>{User_data.ref_to_string(u)} => 
+            Option.some(<>{User_data.ref_to_string(u)} =>
                <a onclick={(function(_){logout()})}>Logout</a></>
             )
         default: Option.none
         };
         WLoginbox.html(WLoginbox.default_config,"login_box", login, user_opt)
     }
+
     resource =
        (Parser.general_parser((http_request -> resource))) parser
        | "/new" -> function(_req){
            Resource.styled_page("New User",["/resources/todos.css"],new())
        }
        | "/edit" -> function(_req){edit()}
-       | "/view/" login = (.*) -> function(_req){view(Text.to_string(login))}
+       | "/view/" login = (.*) -> function(_req) { view(Text.to_string(login)) }
        | .* -> function(_req){start()}
 }

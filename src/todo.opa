@@ -13,58 +13,69 @@ database stringmap(stringmap(todo_item)) /todo_items
 database /todo_items[_][_]/done = false
 
 module Todo {
-    function update_counts(){
+    function update_counts() {
         num_done = Dom.length(Dom.select_class("done"));
         total = Dom.length(Dom.select_class("todo"));
         Dom.set_text(#number_done, Int.to_string(num_done));
         Dom.set_text(#number_left, Int.to_string(total - num_done))
     }
-    function make_done(string id){
-        if(Dom.is_checked(Dom.select_inside(#{id}, Dom.select_raw("input")))){
+
+    function make_done(string id) {
+        if(Dom.is_checked(Dom.select_inside(#{id}, Dom.select_raw("input")))) {
             db_make_done(id);
-            Dom.add_class(#{id}, "done")}else{Dom.remove_class(#{id},
-                                                  "done")};
+            Dom.add_class(#{id}, "done")
+        } else {
+            Dom.remove_class(#{id}, "done")
+        };
         update_counts()
     }
-    exposed @async function db_make_done(string id){
+
+    exposed @async function db_make_done(string id) {
         username = User.get_username();
         items = /todo_items[username];
         item = Option.get(StringMap.get(id, items));
         @/todo_items[username] <-
           StringMap.add(id, {item with done : true}, items)
     }
-    function remove_item(string id){
+
+    function remove_item(string id) {
         db_remove_item(id);
         Dom.remove(Dom.select_parent_one(#{id}));
         update_counts()
     }
-    exposed @async function db_remove_item(string id){
+
+    exposed @async function db_remove_item(string id) {
         username = User.get_username();
         items = /todo_items[username];
         @/todo_items[username] <- StringMap.remove(id, items)
     }
-    @async function remove_all_done(){
+
+    @async function remove_all_done() {
         Dom.iter((function(x){remove_item(Dom.get_id(x))}),
                   Dom.select_class("done"))
     }
-    function add_todo(string x){
+
+    function add_todo(string x) {
         id = Dom.fresh_id();
         db_add_todo(id, x);
         add_todo_to_page(id, x, false)
     }
-    exposed @async function db_add_todo(string id,string x){
+
+    exposed @async function db_add_todo(string id,string x) {
         username = User.get_username();
         items = /todo_items[username];
         @/todo_items[username] <-
         StringMap.add(id, { value : x, done : false, created_at : "" },
           items)
     }
-    exposed function add_todos(){
+
+    exposed function add_todos() {
         username = User.get_username();
         items = /todo_items[username];
         StringMap.iter((function(x,y){add_todo_to_page(x, y.value, y.done)}), items)
     }
-    function add_todo_to_page(string id,string value,bool is_done){
+
+    function add_todo_to_page(string id,string value,bool is_done) {
         line =
           <li><div class="todo {if (is_done) "done" else ""}" id={ id }>
             <div class="display">
@@ -81,14 +92,16 @@ module Todo {
         Dom.set_value(#new_todo, "");
         update_counts()
     }
-    function todos(){
-        if (User.is_logged()){
+
+    function todos() {
+        if (User.is_logged()) {
             Resource.styled_page("Todos",["/resources/todos.css"],todos_page())
         } else {
             Resource.styled_page("Sign Up",["/resources/todos.css"],User.new())
         }
     }
-    function todos_page(){
+
+    function todos_page() {
         <a onclick={function(_){User.logout()}}>Logout</a>
         <div id="todoapp">
           <div class="title">
@@ -118,6 +131,7 @@ module Todo {
           </div>
         </div>
     }
+
    resource =
     (Parser.general_parser((http_request -> resource))) parser
       (.*) -> function(_req){todos()}
