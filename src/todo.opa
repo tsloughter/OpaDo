@@ -79,9 +79,9 @@ module Todo {
         line =
           <li><div class="todo {if (is_done) "done" else ""}" id={ id }>
             <div class="display">
-              <input class="check" type="checkbox" onclick={function(_){make_done(id)}} style="background:#EDECE3"/>
-              <div class="todo_content">{ value }</div>
               <span class="todo_destroy icon icon-remove" onclick={function(_){remove_item(id)}}></span>
+              <input class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
+              <div class="todo_content">{ value }</div>
             </div>
             <div class="edit">
              <input class="todo-input" type="text" value="" />
@@ -106,31 +106,32 @@ module Todo {
              <a class="btn pull-right" onclick={function(_){User.logout()}}>Logout</a>
            </div>
         </div>
-        <div class="container">
-         <div id="todoapp">
-          <span style="font-size=10px">Note: No guarentee your data will not be lost. This is just a demo for now.</span>
+        <div class="container" id="todoapp">
+         <div class="hero-unit">  
           <div id=#create_todo>
-              <input id=#new_todo placeholder="What needs to be done?" type="text"
+              <input id=#new_todo class="xlarge" placeholder="What needs to be done?" type="text"
                 onnewline={function(_){add_todo(Dom.get_value(#new_todo))}} />
           </div>
-          <div class="content">
+          <span class="help-block">Note: No guarentee your data will not be lost. This is just a demo for now.</span>
+         </div>
+         <div class="content">
             <div id=#todos>
               <ul id=#todo_list onready={function(_){add_todos()}} ></ul>
             </div>
-             <div id="todo_stats">
-              <span class="todo_count">
-                <span id=#number_left class="number">0</span>
-                <span class="word">items</span> left.
-              </span>
-              <span class="todo_clear pull-right">
+             <div id="todo_stats" class="well">
+              <p class="todo_clear pull-right">
                 <a class="btn" href="#" onclick={function(_){remove_all_done()}}>
-                  <span class="icon icon-trash"/>Clear <span id=#number_done class="number-done">0</span>
+                  <span class="icon icon-trash"/>Clear 
+                  <span id=#number_done class="number-done">0</span>
                   completed <span class="word-done">items</span>
                 </a>
-              </span>
+              </p>
+              <p class="todo_count">
+                <span id=#number_left class="number">0</span>
+                <span class="word">items</span> left.
+              </p>
             </div>
           </div>
-        </div>
        </div> 
     }
 
