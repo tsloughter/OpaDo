@@ -97,35 +97,60 @@ module User {
         if (User.is_logged()) {
             Resource.default_redirection_page("/todos")
         } else {
-            Resource.styled_page("Login", ["/resources/todos.css"],
-              <div id="todoapp"><div class="title"><h1>Login</h1></div><div class="content">{loginbox()}</div><div id="todo_stats">No account? <a href="/user/new" class="btn large primary">Sign Up</a></div></div>)
+            Resource.styled_page("Login", ["/resources/style.css"],
+            <div class="topbar">
+              <div class="container">
+                <a class="brand" href="#"></a>
+              </div>
+            </div>
+            <div class="container" id="todoapp">
+                <div class="content">
+                   <h1>Login</h1>
+                   {loginbox()}
+                   <div class="well">No account? 
+                      <a href="/user/new" class="btn">Sign Up</a>
+                   </div>
+                </div>
+            </div>
+            )
         }
     }
 
     function new(){
-         <div id="todoapp">
-           <div class="title">
-             <h1>Sign Up</h1>
-           </div>
+      <div class="topbar">
+         <div class="container">
+            <a class="brand" href="#"></a>
+         </div>
+      </div>
+      <div class="container" id="todoapp">
            <div class="content">
+             <h1>Sign Up</h1>
              <form onsubmit={function(_){create(Dom.get_value(#username),Dom.get_value(#password))}}>
-             <div id=#create_todo>
-               <input id=#username class="login_input" placeholder="New Username..." type="text" />
-             </div>
+               <div id=#create_todo class="clearfix">
+                 <input id=#username class="xlarge" placeholder="New Username..." type="text" />
+               </div>
 
-             <div id=#create_todo>
-               <input id=#password class="login_input" placeholder="Password..." type="password" />
-             </div>
-
-             <button type=submit class="btn large primary" onclick={
+               <div id=#create_todo class="clearfix">
+                 <input id=#password class="xlarge" placeholder="Password..." type="password" />
+               </div>
+               <button type=submit class="btn large" onclick={
                      function(_){
                          create(Dom.get_value(#username),Dom.get_value(#password));
                          login(Dom.get_value(#username), Dom.get_value(#password))
-                     }}>Create</button> or <a href="/login">Login here</a>
+                     }}>Create</button>
+                      or <a href="/login">Login here</a>
              </form>
            </div>
-           <div style="margin-top:10px;">Get the source <a href="https://github.com/tsloughter/opado">here</a>. And read about the implementation at <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a>, <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">on adding Googlel Analytics</a>, <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">on vastling improving performance.</></div>
-         </div>
+           <div class="footer">
+             Get the source <a href="https://github.com/tsloughter/opado">here</a>. 
+             And read about the implementation at 
+             <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, 
+             <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, 
+             <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a>, 
+             <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">on adding Googlel Analytics</a>, 
+             <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">on vastling improving performance.</a>
+           </div>
+       </div>
     }
 
     function process(_) {
@@ -189,7 +214,7 @@ module User {
         user_opt = match (get_status()) {
         case { logged : u }:
             Option.some(<>{User_data.ref_to_string(u)} =>
-               <a onclick={(function(_){logout()})}>Logout</a></>
+               <a class="btn" onclick={(function(_){logout()})}>Logout</a></>
             )
         default: Option.none
         };
@@ -199,7 +224,7 @@ module User {
     resource =
        (Parser.general_parser((http_request -> resource))) parser
        | "/new" -> function(_req){
-           Resource.styled_page("New User",["/resources/todos.css"],new())
+           Resource.styled_page("New User",["/resources/style.css"],new())
        }
        | "/edit" -> function(_req){edit()}
        | "/view/" login = (.*) -> function(_req) { view(Text.to_string(login)) }
