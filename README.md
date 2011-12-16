@@ -3,14 +3,15 @@
 ## Compile and Run:
 
 ```bash
-[tristan@marx ~/Devel/opado]
-15:45 (master) λ make
-opa src/todo.opa src/user.opa src/admin.opa src/main.opa
+19:05 (master) λ make
+opa --parser js-like src/todo.opa src/user.opa src/admin.opa src/main.opa -o main.exe
 Embedding file "/Users/tristan/Devel/opado/resources/destroy.png" as resource "resources/destroy.png" with mimetype "image/png"
+Embedding file "/Users/tristan/Devel/opado/resources/js/bugherd.js" as resource "resources/js/bugherd.js" with mimetype "application/javascript"
+Embedding file "/Users/tristan/Devel/opado/resources/js/google_analytics.js" as resource "resources/js/google_analytics.js" with mimetype "application/javascript"
 Embedding file "/Users/tristan/Devel/opado/resources/todos.css" as resource "resources/todos.css" with mimetype "text/css"
 [tristan@marx ~/Devel/opado]
-15:47 (master) λ ./src/main.exe 
+19:05 (master) λ ./main.exe
 Accesses logged to access.log
 Messages logged to error.log
-Opa-server (OPA/652) serving on http://marx.local:8080
+Http (OPA/1056) serving on http://marx.local:8080
 ```
