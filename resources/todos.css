@@ -16,18 +16,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	font-family: inherit;
 	vertical-align: baseline;
 }
-body {
-	line-height: 1;
-	color: black;
-	background: white;
-}
-ol, ul {
-	list-style: none;
-}
-a img {
-	border: none;
-}
-
 html {
 	background: #eeeeee;
 }
@@ -39,6 +27,12 @@ body {
 	color: #333333;
 }
 
+ol, ul {
+	list-style: none;
+}
+a img {
+	border: none;
+}
 #todoapp {
 	width: 480px;
 	margin: 0 auto 40px;
