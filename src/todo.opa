@@ -79,9 +79,9 @@ module Todo {
         line =
           <li><div class="todo {if (is_done) "done" else ""}" id={ id }>
             <div class="display">
-              <input class="check" type="checkbox" onclick={function(_){make_done(id)}} />
+              <input class="check" type="checkbox" onclick={function(_){make_done(id)}} style="background:#EDECE3"/>
               <div class="todo_content">{ value }</div>
-              <span class="todo_destroy" onclick={function(_){remove_item(id)}}></span>
+              <span class="todo_destroy icon icon-remove" onclick={function(_){remove_item(id)}}></span>
             </div>
             <div class="edit">
              <input class="todo-input" type="text" value="" />
@@ -92,27 +92,28 @@ module Todo {
         Dom.set_value(#new_todo, "");
         update_counts()
     }
-
-    function todos() {
-        if (User.is_logged()) {
-            Resource.styled_page("Todos",["/resources/todos.css"],todos_page())
+    function todos(){
+        if (User.is_logged()){
+            Resource.styled_page("Todos",["/resources/style.css"],todos_page())
         } else {
-            Resource.styled_page("Sign Up",["/resources/todos.css"],User.new())
+            Resource.styled_page("Sign Up",["/resources/style.css"],User.new())
         }
     }
-
     function todos_page() {
-        <a onclick={function(_){User.logout()}}>Logout</a>
-        <div id="todoapp">
-          <div class="title">
-            <h1>OpaDo Beta</h1>
-            <span style="font-size=10px">Note: No guarentee your data will not be lost. This is just a demo for now.</span>
-          </div>
-          <div class="content">
-            <div id=#create_todo>
+        <div class="topbar">
+           <div class="container">
+             <a class="brand" href="#"></a>
+             <a class="btn pull-right" onclick={function(_){User.logout()}}>Logout</a>
+           </div>
+        </div>
+        <div class="container">
+         <div id="todoapp">
+          <span style="font-size=10px">Note: No guarentee your data will not be lost. This is just a demo for now.</span>
+          <div id=#create_todo>
               <input id=#new_todo placeholder="What needs to be done?" type="text"
                 onnewline={function(_){add_todo(Dom.get_value(#new_todo))}} />
-            </div>
+          </div>
+          <div class="content">
             <div id=#todos>
               <ul id=#todo_list onready={function(_){add_todos()}} ></ul>
             </div>
@@ -121,15 +122,16 @@ module Todo {
                 <span id=#number_left class="number">0</span>
                 <span class="word">items</span> left.
               </span>
-              <span class="todo_clear">
-                <a href="#" onclick={function(_){remove_all_done()}}>
-                  Clear <span id=#number_done class="number-done">0</span>
+              <span class="todo_clear pull-right">
+                <a class="btn" href="#" onclick={function(_){remove_all_done()}}>
+                  <span class="icon icon-trash"/>Clear <span id=#number_done class="number-done">0</span>
                   completed <span class="word-done">items</span>
                 </a>
               </span>
             </div>
           </div>
         </div>
+       </div> 
     }
 
    resource =
