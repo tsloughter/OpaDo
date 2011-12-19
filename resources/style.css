@@ -1,113 +1,128 @@
 /**
  * @author Ida Swarczewskaja (CSS & design)
  */
-html {
-  background: #45231A url('/resources/opado-bg-tile.jpg') repeat 0 0;
-}
+html {background: #45231A url('/resources/opado-bg-tile.jpg') repeat 0 0;}
 body {
   background: url('/resources/opado-bg-gradient-tile.jpg') repeat-x bottom left;
   color: #6C6B66;
 }
-ol, ul {list-style: none;}
-a {color:#45231A;text-decoration:none;}
-a:hover {color:#683426;}
+
+/* Links */
+a {color:#600B00;text-decoration:none;}
+a:hover {color:#480800;}
 a img {border: none;}
+
+/* Buttons */
 .btn, button[type="submit"] {
-  background-color: #45231A;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#683426), to(#45231A));
-  background-image: -webkit-linear-gradient(#683426,#45231A);
-  background-image: -moz-linear-gradient(top, #683426,#45231A);
-  background-image: -ms-linear-gradient(#683426,#45231A);
-  background-image: -o-linear-gradient(#683426,#45231A);
-  background-image: linear-gradient(#683426,#45231A);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#683426', endColorstr='#45231A', GradientType=0);
-  color:#D7D6CB;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
-  border-color:#35130A;
+  background-color: #600B00;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#803C33), to(#600B00));
+  background-image: -webkit-linear-gradient(#803C33,#600B00);
+  background-image: -moz-linear-gradient(top, #803C33,#600B00);
+  background-image: -ms-linear-gradient(#803C33,#600B00);
+  background-image: -o-linear-gradient(#803C33,#600B00);
+  background-image: linear-gradient(#803C33,#600B00);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#803C33', endColorstr='#600B00', GradientType=0);
+  border-color:#600B00;
+  border-bottom: 1px solid #480800;
 }
-.btn:hover, button[type="submit"]:hover {color:#D7D6CB;}
+.btn, button[type="submit"], .topbar a.btn {
+  color:#FFE;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+.btn:hover, button[type="submit"]:hover, .topbar a.btn:hover {color:#DDC;}
+.btn.large, button[type="submit"] {width:150px;}
+
+/* Add class .btn to loginbox submit button and remove this style */
 button[type="submit"] {
-font-size: 15px;
-line-height: normal;
-padding: 9px 14px 9px;
--webkit-border-radius: 6px;
--moz-border-radius: 6px;
-border-radius: 6px;
-cursor: pointer;
-display: inline-block;
--webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
--moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
--webkit-transition: 0.1s linear all;
--moz-transition: 0.1s linear all;
--ms-transition: 0.1s linear all;
--o-transition: 0.1s linear all;
-transition: 0.1s linear all;
-border-image: initial;
+  font-size: 15px;
+  line-height: normal;
+  padding: 9px 14px 9px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-transition: 0.1s linear all;
+  -moz-transition: 0.1s linear all;
+  -ms-transition: 0.1s linear all;
+  -o-transition: 0.1s linear all;
+  transition: 0.1s linear all;
+  border-image: initial;
 }
 
 /* Main structure */
-.brand, .icon {
-  background-image: url('/resources/opado-sprite.png');
-  background-repeat: no-repeat;
-}
-.icon {
-  width:16px;
-  height:16px;
-}
+/* Topbar */
 .topbar {height:60px;}
 .topbar a.btn{margin-top:15px;}
 .topbar .brand {
-  background-position:20px 0;
+  background: url('/resources/opado-logo.png') no-repeat 20px 0;
   height: 22px;
-  width:103px;
+  width:134px;
   margin-top: 10px;
 }
+/* Container */
 .container {
   width:480px;
 }
+#todoapp {padding-top:60px;}
+
+/* Top content box */
 .hero-unit {
   margin-bottom:0;
-  padding:20px;
+  padding:0 0 10px 0;
   background:transparent;
 }
-#todoapp {padding-top:60px;}
+
+/* Main  content box */
 .content {
   background: url('/resources/paper-bg-tile.jpg') repeat 0 0;
+  border-top:1px solid white;
   position:relative;
-  padding: 20px;
+  padding: 10px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px 5px 5px 5px;
-  -webkit-box-shadow: 0 1px 3px #EDECE3 inset, 0 3px 5px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 1px 3px #EDECE3 inset, 0 3px 5px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 1px 3px #EDECE3 inset, 0 3px 5px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 1px 3px #EDECE3 inset, 0 3px 5px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 1px 3px #EDECE3 inset, 0 3px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px #EDECE3 inset, 0 3px 5px rgba(0, 0, 0, 0.3);
   text-shadow: 0 1px 1px rgba(255,255,255,0.7);
 }
-/* inputs */
+.content form, .content h1 {margin-left:10px;}
+
+/* Inputs */
 input {
-   height: 24px;
-   font-size: 24px;
-   line-height: 28px;
-   outline: none;
-   padding: 6px;
-   background: #EDECE3;
+  height: 24px;
+  font-size: 24px;
+  line-height: 28px;
+  outline: none;
+  padding: 6px;
+  background: #EFEFDF;
+  border: 1px solid #BBB;
+  border-bottom: 1px solid white;
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2)
 }
 input#new_todo {
-   width:420px;
-   background-color:rgba(0,0,0,0.3);
-   border: 1px solid #25130A;
-   color:#D7D6CB;
+   width:466px;
+   background-color:rgba(0,0,0,0.2);
+   border: 1px solid #600B00;
+   color:#BBA;
    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
    -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
    -o-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
    box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
+   margin-bottom:5px;
 }
-#login_box input {margin-bottom:10px;}
-.help-block, .footer {color:#A7A59B;}
-.footer a {color:#D7D6CB;}
-
+#login_box input {
+  width:270px; /* might be replaced by class .xlarge */
+  display:block;
+  margin-bottom:18px;
+}
 
 /* Todo list */
 ul#todo_list {
@@ -126,34 +141,56 @@ ul#todo_list li:first-child {border-top:none;}
 ul#todo_list input[type="checkbox"]{
   float:left;
   margin:6px 0;
+  position:relative;
 }
-ul#todo_list .icon.icon-remove, ul#todo_list .icon.icon-remove:hover {
-  background-position:0 -40px;
+ul#todo_list .icon.icon-remove {
   float:right;
+  display:none;
+  margin: 4px 0;
+  position:relative;
 }
-ul#todo_list .display:hover .icon.icon-remove {display:block;}
+ul#todo_list .display:hover .icon.icon-remove {display:inline-block;}
 
-.todo_content {padding-left:20px;font-size:20px; line-height:24px;}
+.todo_content {padding-left:20px;font-size:20px; line-height:24px;color:#6C6B66;}
+
+/* This is for edit input */
+#todo_list .editing .display,
+#todo_list .edit {
+	display: none;
+}
+#todo_list .editing .edit {
+	display: block;
+}
 
 /* Bottom */
 .well {
+  background-color: #EED;
   background-color:rgba(255,255,255,0.3);
-  border-top: 1px solid #F7F7F5;
+  border:1px solid #ccc;
+  border:1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid white;
   margin-bottom:0;
   padding:10px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 1px rgba(0, 0, 0, 0.05);
 }
-#todo_stats .icon.icon-trash, #todo_stats .icon.icon-trash:hover{
-  background-position:0 -58px;
-}
-.edit input {display:none;} /*fixme*/
+#todo_stats .todo_count {margin:5px 0;}
+#todo_stats .todo_count .number {font-weight:bold;}
 
 /* Footer */
 .footer {
-  width: 445px;
+  width: 480px;
   position:relative;
-  margin: 8px auto 15px auto;
+  margin: 8px auto;
   text-align:center;
+  font-size:11px;
 }
 .footer span {margin: 0 5px;}
 .footer img {margin:3px 0 0 2px;}
 .footer span, .footer a, .footer img {vertical-align:top;}
+.footer a {color:#EED;}
+
+/* Help block */
+.help-block {margin-left:10px;}
+.help-block, .footer {color:#ccb;}
