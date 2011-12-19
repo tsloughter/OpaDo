@@ -84,7 +84,7 @@ module Todo {
               <div class="todo_content">{ value }</div>
             </div>
             <div class="edit">
-             <input class="todo-input" type="text" value="" />
+             <input class="todo-input xlarge" type="text" value="" />
             </div>
           </div></li>
         Dom.transform([#todo_list =+ line]);
@@ -112,23 +112,23 @@ module Todo {
               <input id=#new_todo class="xlarge" placeholder="What needs to be done?" type="text"
                 onnewline={function(_){add_todo(Dom.get_value(#new_todo))}} />
           </div>
-          <span class="help-block">Note: No guarentee your data will not be lost. This is just a demo for now.</span>
+          <span class="help-block">Note: This is beta version. No guarentee your data wont be lost.</span>
          </div>
          <div class="content">
             <div id=#todos>
-              <ul id=#todo_list onready={function(_){add_todos()}} ></ul>
+              <ul id=#todo_list onready={function(_){add_todos()}} class="unstyled"></ul>
             </div>
              <div id="todo_stats" class="well">
               <p class="todo_clear pull-right">
                 <a class="btn" href="#" onclick={function(_){remove_all_done()}}>
-                  <span class="icon icon-trash"/>Clear 
+                  <span class="icon icon-white icon-trash"/> Clear 
                   <span id=#number_done class="number-done">0</span>
                   completed <span class="word-done">items</span>
                 </a>
               </p>
               <p class="todo_count">
                 <span id=#number_left class="number">0</span>
-                <span class="word">items</span> left.
+                <span class="word">items</span> left
               </p>
             </div>
           </div>
