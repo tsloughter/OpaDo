@@ -1,9 +1,8 @@
 package opado.admin
 
+import opado.ui
 import opado.todo
 import opado.user
-
-import stdlib.themes.bootstrap
 
 module Admin {
     function add_users() {
@@ -34,8 +33,7 @@ module Admin {
     }
 
     resource =
-      (Parser.general_parser((http_request -> resource))) parser (.*) -> function(_req){
-          Resource.styled_page("Admin",
-          ["/resources/todos.css"],
-          admin())}
+      (Parser.general_parser((http_request -> 'toto))) parser (.*) -> function(_req){
+         mypage("Admin", admin())
+          }
 }

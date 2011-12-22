@@ -12,7 +12,8 @@ import stdlib.crypto
 import stdlib.web.client
 import stdlib.core.web.core
 import stdlib.widgets.formbuilder
-import stdlib.themes.bootstrap
+
+import opado.ui
 
 // DATA
 
@@ -97,7 +98,7 @@ module User {
         if (User.is_logged()) {
             Resource.default_redirection_page("/todos")
         } else {
-            Resource.styled_page("Login", ["/resources/style.css"],
+            mypage("Login",
             <a href="http://github.com/tsloughter/opado" xmlns="http://www.w3.org/1999/xhtml">
             <img src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" id="cfyzwpwbekcrcqccmvfnzflwwxddvqsz" style="position: absolute; top: 0em; right: 0em; border-top-width: 0em; border-right-width: 0em; border-bottom-width: 0em; border-left-width: 0em; border-style: initial; border-color: initial; border-image: initial; "/>
             </a>
@@ -167,7 +168,7 @@ module User {
 
     function edit() {
         if(User.is_logged()) {
-            Resource.html("User module",<><h1>Module User</h1>Under construction</>)
+            mypage("User module",<><h1>Module User</h1>Under construction</>)
         } else {
             start()
         }
@@ -212,9 +213,9 @@ module User {
     function view(string login) {
         match (User_data.get(User_data.mk_ref(login))) {
         case { none }:
-            Resource.html("User module", <h1>Module User</h1><>Error, the user {login} does'nt exist</>)
+            mypage("User module", <h1>Module User</h1><>Error, the user {login} does'nt exist</>)
         case { some : _ }:
-            Resource.html("User module", <h1>Module User</h1><>This the public profil of {login}, this page is under construction</>)
+            mypage("User module", <h1>Module User</h1><>This the public profil of {login}, this page is under construction</>)
         }
     }
 
@@ -232,7 +233,7 @@ module User {
     resource =
        (Parser.general_parser((http_request -> resource))) parser
        | "/new" -> function(_req){
-           Resource.styled_page("New User",["/resources/style.css"],new())
+           mypage("New User",new())
        }
        | "/edit" -> function(_req){edit()}
        | "/view/" login = (.*) -> function(_req) { view(Text.to_string(login)) }

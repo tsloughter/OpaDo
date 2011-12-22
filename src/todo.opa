@@ -1,6 +1,7 @@
 package opado.todo
 
 import opado.user
+import opado.ui
 import stdlib.web.client
 
 type todo_item = {
@@ -94,9 +95,9 @@ module Todo {
     }
     function todos(){
         if (User.is_logged()){
-            Resource.styled_page("Todos",["/resources/style.css"],todos_page())
+            mypage("Todos",todos_page())
         } else {
-            Resource.styled_page("Sign Up",["/resources/style.css"],User.new())
+            mypage("Sign Up",User.new())
         }
     }
     function todos_page() {
