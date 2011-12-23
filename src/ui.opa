@@ -1,8 +1,12 @@
+/*
+ * @author Ida Swarczewskaja
+**/
+
 package opado.ui
 
 import stdlib.themes.bootstrap.core
 
-module Desktop {
+/*module Desktop {
   custom_css = {
     custom_body: none,
     custom_headers: none,
@@ -15,8 +19,8 @@ module IPhone {
   custom_css = {
     custom_body: none,
     custom_headers: none,
-    custom_css: ["http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css"],
-    custom_js: ["http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"],
+    custom_css: ["/resources/bootstrap.min.css", "/resources/style.css", "/resources/mobile.css"],
+    custom_js: [],
   }
   custom_css_funs =  [ function(_){some(IPhone.custom_css)}]
 }
@@ -26,14 +30,19 @@ custom_css_funs = [
     match( ua ){
     | { environment : { iPhone }, renderer:_ } : some(IPhone.custom_css)
     | _ :  some(Desktop.custom_css)
-      }
+     }
     }
   ]
+*/
 
 function mypage(title,body){
  Resource.full_page(title, body,
-                 <></>,
+                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                 <link href="/resources/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+                 <link href="/resources/style.css" rel="stylesheet" type="text/css"/>
+                 <link href="/resources/mobile.css" rel="stylesheet" type="text/css" media="only screen and (min-width: 0px) and (max-width: 320px)"/>
+                 <link href="/resources/tablet.css" rel="stylesheet" type="text/css" media="only screen and (min-width: 321px) and (max-width: 768px)"/>,
                  web_response {success},
-                 Resource_private.default_customizers ++ custom_css_funs 
+                 Resource_private.default_customizers //++ custom_css_funs 
                  )
 }
