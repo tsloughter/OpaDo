@@ -4,7 +4,9 @@ import opado.user
 import opado.admin
 import opado.todo
 
-function with_request(f){ f(ThreadContext.get({current}).request ? error("no request")) }
+function with_request(f){
+  f(ThreadContext.get({current}).request ? error("no request"))
+}
 
 urls = parser
     {Rule.debug_parse_string((function(s){Log.notice("URL", s)}))}
@@ -20,3 +22,5 @@ Server.start(Server.http,
          {register:["/resources/js/google_analytics.js"]},
          {custom:urls}]
 )
+
+
