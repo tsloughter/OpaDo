@@ -100,7 +100,7 @@ module User {
         } else {
             mypage("Login",
             <a href="http://github.com/tsloughter/opado" xmlns="http://www.w3.org/1999/xhtml">
-            <img src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" id="cfyzwpwbekcrcqccmvfnzflwwxddvqsz" style="position: absolute; top: 0em; right: 0em; border-top-width: 0em; border-right-width: 0em; border-bottom-width: 0em; border-left-width: 0em; border-style: initial; border-color: initial; border-image: initial; "/>
+            <img src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" id="cfyzwpwbekcrcqccmvfnzflwwxddvqsz" style="position: absolute; top: 0em; right: 0em; border-top-width: 0em; border-right-width: 0em; border-bottom-width: 0em; border-left-width: 0em; border-style: initial; border-color: initial; border-image: initial; z-index:10001;"/>
             </a>
             <div class="topbar">
               <div class="container">
@@ -115,6 +115,16 @@ module User {
                       <a href="/user/new">Sign Up</a>
                    </div>
                 </div>
+               <div class="footer">
+                 <span>Implementation: 
+                 <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, 
+                 <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, 
+                 <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a>, 
+                 <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">Google Analytics</a>, 
+                 <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">Improving performance</a></span> · 
+                 <span>Fork on <a href="https://github.com/tsloughter/opado">GitHub</a></span> · 
+                 <span>Built with <a href="http://opalang.org"><img src="/resources/opa-logo-small.png" alt="Opa"/></a></span>
+              </>
             </div>
             )
         }
@@ -122,7 +132,7 @@ module User {
 
     function new(){
       <a href="http://github.com/tsloughter/opado" xmlns="http://www.w3.org/1999/xhtml">
-      <img src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" id="cfyzwpwbekcrcqccmvfnzflwwxddvqsz" style="position: absolute; top: 0em; right: 0em; border-top-width: 0em; border-right-width: 0em; border-bottom-width: 0em; border-left-width: 0em; border-style: initial; border-color: initial; border-image: initial; "/>
+      <img src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" id="cfyzwpwbekcrcqccmvfnzflwwxddvqsz" style="position: absolute; top: 0em; right: 0em; border-top-width: 0em; border-right-width: 0em; border-bottom-width: 0em; border-left-width: 0em; border-style: initial; border-color: initial; border-image: initial; z-index:10001;"/>
       </a>       
       <div class="topbar">
          <div class="container">
@@ -149,7 +159,6 @@ module User {
              <div class="well">Already user? <a href="/login">Login here</a></div>
            </div>
            <div class="footer">
-             
              <span>Read about the implementation: 
              <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, 
              <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, 
@@ -157,7 +166,7 @@ module User {
              <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">Google Analytics</a>, 
              <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">Improving performance</a></span> · 
              <span>Fork on <a href="https://github.com/tsloughter/opado">GitHub</a></span> · 
-             <span>Built with <a href="http://opalang.org"><img src="/resources/opa-logo-small.png" alt="Opa"/></a></span>
+             <span >Built with <a href="http://opalang.org"><img src="/resources/opa-logo-small.png" alt="Opa"/></a></span>
            </>
        </>
     }
@@ -239,3 +248,4 @@ module User {
        | "/view/" login = (.*) -> function(_req) { view(Text.to_string(login)) }
        | .* -> function(_req){start()}
 }
+
