@@ -1,11 +1,13 @@
 /**
  * @author Ida Swarczewskaja (CSS & design)
  */
-html {background: #45231A url('/resources/opado-bg-tile.jpg') repeat 0 0;}
+html {background: #600B00 url('/resources/opado-bg-tile.jpg') repeat 0 0;}
 body {
-  background: url('/resources/opado-bg-gradient-tile.jpg') repeat-x bottom left;
+  background: url('/resources/opado-bg-gradient-tile.jpg') repeat-x top left;
   color: #6C6B66;
 }
+.topbar {background: url('/resources/opado-bg-gradient-tile.jpg') repeat-x top left;}
+.hero-unit {position:relative; top:60px; }
 
 /* Links */
 a {color:#600B00;text-decoration:none;}
@@ -31,6 +33,7 @@ a img {border: none;}
 }
 .btn:hover, button[type="submit"]:hover, .topbar a.btn:hover {color:#DDC;}
 .btn.large, button[type="submit"] {width:150px;}
+.btn > .icon {margin-left:-3px;}
 
 /* Add class .btn to loginbox submit button and remove this style */
 button[type="submit"] {
@@ -192,5 +195,5 @@ ul#todo_list .display:hover .icon.icon-remove {display:inline-block;}
 .footer a {color:#EED;}
 
 /* Help block */
-.help-block {margin-left:10px;}
+/*.help-block {margin-left:10px;}*/
 .help-block, .footer {color:#ccb;}
