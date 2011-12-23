@@ -107,14 +107,13 @@ module Todo {
              <a class="btn pull-right" onclick={function(_){User.logout()}}>Logout</a>
            </div>
         </div>
-        <div class="container" id="todoapp">
-         <div class="hero-unit">  
-          <div id=#create_todo>
-              <input id=#new_todo class="xlarge" placeholder="What needs to be done?" type="text"
+        <div class="container hero-unit">
+             <div id=#create_todo>
+                  <input id=#new_todo class="xlarge" placeholder="What needs to be done?" type="text"
                 onnewline={function(_){add_todo(Dom.get_value(#new_todo))}} />
-          </div>
-          <span class="help-block">Note: This is beta version. No guarentee your data wont be lost.</span>
-         </div>
+             </div>
+        </div>
+        <div class="container" id="todoapp">
          <div class="content">
             <div id=#todos>
               <ul id=#todo_list onready={function(_){add_todos()}} class="unstyled"></ul>
@@ -133,6 +132,7 @@ module Todo {
               </p>
             </div>
           </div>
+          <div class="footer">Note: This is beta version. No guarentee your data wont be lost.</div>
        </div> 
     }
 
