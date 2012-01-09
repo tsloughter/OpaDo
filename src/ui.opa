@@ -39,9 +39,7 @@ function mypage(title,body){
  Resource.full_page(title, body,
                  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                  <link href="/resources/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-                 <link href="/resources/style.css" rel="stylesheet" type="text/css"/>
-                 <link href="/resources/mobile.css" rel="stylesheet" type="text/css" media="only screen and (min-width: 0px) and (max-width: 320px)"/>
-                 <link href="/resources/tablet.css" rel="stylesheet" type="text/css" media="only screen and (min-width: 321px) and (max-width: 768px)"/>,
+                 <link href="/resources/style.css" rel="stylesheet" type="text/css"/>,
                  web_response {success},
                  Resource_private.default_customizers //++ custom_css_funs 
                  )
