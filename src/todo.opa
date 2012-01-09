@@ -127,7 +127,7 @@ module Todo {
                 </a>
               </p>
               <p class="todo_count">
-                <span id=#number_left class="number">0</span>
+                <span id=#number_left class="number bold">0</span>
                 <span class="word">items</span> left
               </p>
             </div>
