@@ -7,10 +7,11 @@
 
 package opado.user
 
-import stdlib.widgets.loginbox
 import stdlib.crypto
 import stdlib.web.client
 import stdlib.core.web.core
+import stdlib.widgets.core
+import stdlib.widgets.loginbox
 import stdlib.widgets.formbuilder
 
 import opado.ui
@@ -94,6 +95,19 @@ module User {
         Client.reload()
     }
 
+    function footer() {
+             <div class="footer">
+                 <span>Implementation: 
+                 <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a> | 
+                 <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a> | 
+                 <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a> | 
+                 <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">Google Analytics</a> | 
+                 <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">Improving performance</a></span><br/>
+                 <span>Fork on <a href="https://github.com/tsloughter/opado">GitHub</a></span> · 
+                 <span>Built with <a href="http://opalang.org"><img src="/resources/opa-logo-small.png" alt="Opa"/></a></span>
+              </>
+    }
+
     function start() {
         if (User.is_logged()) {
             Resource.default_redirection_page("/todos")
@@ -112,19 +126,10 @@ module User {
                    <h1>Login</h1>
                    {loginbox()}
                    <div class="well">No account? 
-                      <a href="/user/new">Sign Up</a>
+                      <a href="/user/new"><strong>Sign Up</strong></a>
                    </div>
                 </div>
-               <div class="footer">
-                 <span>Implementation: 
-                 <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, 
-                 <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, 
-                 <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a>, 
-                 <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">Google Analytics</a>, 
-                 <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">Improving performance</a></span> · 
-                 <span>Fork on <a href="https://github.com/tsloughter/opado">GitHub</a></span> · 
-                 <span>Built with <a href="http://opalang.org"><img src="/resources/opa-logo-small.png" alt="Opa"/></a></span>
-              </>
+                {footer()}
             </div>
             )
         }
@@ -156,18 +161,9 @@ module User {
                          login(Dom.get_value(#username), Dom.get_value(#password))
                      }}>Create</button>        
              </form>
-             <div class="well">Already user? <a href="/login">Login here</a></div>
+             <div class="well">Already user? <a href="/login"><strong>Login here</strong></a></div>
            </div>
-           <div class="footer">
-             <span>Read about the implementation: 
-             <a href="http://blog.erlware.org/2011/10/04/todomvc-in-opa/">Part 1</a>, 
-             <a href="http://blog.erlware.org/2011/10/06/opado-data-storage/">Part 2</a>, 
-             <a href="http://blog.erlware.org/2011/10/15/opado-personal-todo-lists/">Part 3</a>, 
-             <a href="http://blog.erlware.org/2011/11/06/adding-js-to-all-opa-resources-use-case-google-analytics/">Google Analytics</a>, 
-             <a href="http://blog.erlware.org/2011/11/06/major-opado-speed-up-with-publish/">Improving performance</a></span> · 
-             <span>Fork on <a href="https://github.com/tsloughter/opado">GitHub</a></span> · 
-             <span >Built with <a href="http://opalang.org"><img src="/resources/opa-logo-small.png" alt="Opa"/></a></span>
-           </>
+           {footer()}
        </>
     }
 
@@ -236,7 +232,14 @@ module User {
             )
         default: Option.none
         };
-        WLoginbox.html(WLoginbox.default_config,"login_box", login, user_opt)
+        config = {WLoginbox.default_config with
+          stylers: {
+            login_box: WStyler.empty,
+            logged_box: WStyler.empty,
+            unlogged_box: WStyler.empty,
+            submit: {class:["btn large"]}
+        }}
+        WLoginbox.html(config,"login_box", login, user_opt)
     }
 
     resource =
