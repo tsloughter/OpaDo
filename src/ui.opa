@@ -37,7 +37,7 @@ custom_css_funs = [
 
 function mypage(title,body){
  Resource.full_page(title, body,
-                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                 <meta name="viewport" content="width=device-width, initial-scale=1.0 , maximum-scale=1.0"/>
                  <link href="/resources/bootstrap.min.css" rel="stylesheet" type="text/css"/>
                  <link href="/resources/style.css" rel="stylesheet" type="text/css"/>,
                  web_response {success},
