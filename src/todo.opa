@@ -76,8 +76,9 @@ module Todo {
     }
 
     function update_todo(string id, string value) {
-        db_add_todo(id, value)
-        update_todo_on_page(id, value)
+        db_add_todo(id, value);
+        update_todo_on_page(id, value);
+        Dom.void_style(#{id^"_destroy"});
     }
 
     function update_todo_on_page(string id, string value) {
@@ -88,6 +89,7 @@ module Todo {
 
     function make_editable(string id, string value) {
         line = <input id={id^"_input"} class="todo_content" onnewline={function(_){update_todo(id, Dom.get_value(#{id^"_input"}))}} value={ value } />
+        Dom.show(#{id^"_destroy"});
         _ = Dom.put_replace(#{id^"_todo"}, Dom.of_xhtml(line));
         update_counts()
     }
@@ -96,7 +98,7 @@ module Todo {
         line =
           <li><div class="todo {if (is_done) "done" else ""}" id={ id }>
             <div class="display">
-              <span class="todo_destroy icon icon-remove" onclick={function(_){remove_item(id)}}></span>
+              <span id={id^"_destroy"} class="todo_destroy icon icon-remove" onclick={function(_){remove_item(id)}}></span>
               <input class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
               <div id={id^"_todo"} class="todo_content" onclick={function(_){make_editable(id, value)}}>{ value }</div>
             </div>

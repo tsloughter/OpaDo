@@ -145,6 +145,7 @@ ul#todo_list .icon.icon-remove {
   margin: 4px 0;
   position:relative;
 }
+
 ul#todo_list .display:hover .icon.icon-remove {display:inline-block;}
 
 .todo_content {padding:0 5px;font-size:18px; line-height:22px;color:#6C6B66;}
@@ -230,7 +231,7 @@ ul#todo_list .display:hover .icon.icon-remove {display:inline-block;}
 @media only screen and (min-width: 768px) and (max-width: 959px) {
     html {height:100%;}
     body {width:100%;height:100%;}
-    
+
     /* Todo list */
     ul#todo_list input[type="checkbox"]{font-size:20px;margin: 3px 6px 0 0;-webkit-appearance:checkbox;}
 }
