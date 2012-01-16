@@ -62,12 +62,11 @@ module Todo {
         add_todo_to_page(id, x, false)
     }
 
-    exposed @async function db_add_todo(string id,string x) {
+    exposed @async function db_add_todo(string id, string x) {
         username = User.get_username();
         items = /todo_items[username];
         @/todo_items[username] <-
-        StringMap.add(id, { value : x, done : false, created_at : "" },
-          items)
+        StringMap.add(id, { value : x, done : false, created_at : "" }, items)
     }
 
     exposed function add_todos() {
@@ -76,16 +75,30 @@ module Todo {
         StringMap.iter((function(x,y){add_todo_to_page(x, y.value, y.done)}), items)
     }
 
-    function add_todo_to_page(string id,string value,bool is_done) {
+    function update_todo(string id, string value) {
+        db_add_todo(id, value)
+        update_todo_on_page(id, value)
+    }
+
+    function update_todo_on_page(string id, string value) {
+        line = <div id={id^"_todo"} class="todo_content" onclick={function(_){make_editable(id, value)}}>{ value }</div>
+        _ = Dom.put_replace(#{id^"_input"}, Dom.of_xhtml(line));
+        void
+    }
+
+    function make_editable(string id, string value) {
+        line = <input id={id^"_input"} class="todo_content" onnewline={function(_){update_todo(id, Dom.get_value(#{id^"_input"}))}} value={ value } />
+        _ = Dom.put_replace(#{id^"_todo"}, Dom.of_xhtml(line));
+        update_counts()
+    }
+
+    function add_todo_to_page(string id, string value, bool is_done) {
         line =
           <li><div class="todo {if (is_done) "done" else ""}" id={ id }>
             <div class="display">
               <span class="todo_destroy icon icon-remove" onclick={function(_){remove_item(id)}}></span>
               <input class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
-              <div class="todo_content">{ value }</div>
-            </div>
-            <div class="edit">
-             <input class="todo-input xlarge" type="text" value="" />
+              <div id={id^"_todo"} class="todo_content" onclick={function(_){make_editable(id, value)}}>{ value }</div>
             </div>
           </div></li>
         Dom.transform([#todo_list =+ line]);
@@ -93,6 +106,7 @@ module Todo {
         Dom.set_value(#new_todo, "");
         update_counts()
     }
+
     function todos(){
         if (User.is_logged()){
             mypage("Todos",todos_page())
@@ -100,6 +114,7 @@ module Todo {
             mypage("Sign Up",User.new())
         }
     }
+
     function todos_page() {
         <div class="topbar">
            <div class="container">
@@ -110,7 +125,7 @@ module Todo {
         <div class="container hero-unit">
              <div id=#create_todo>
                   <input id=#new_todo class="xlarge" placeholder="What needs to be done?" type="text"
-                onnewline={function(_){add_todo(Dom.get_value(#new_todo))}} />
+                  onnewline={function(_){add_todo(Dom.get_value(#new_todo))}} />
              </div>
         </div>
         <div class="container" id="todoapp">
@@ -121,7 +136,7 @@ module Todo {
              <div id="todo_stats" class="well">
               <p class="todo_clear pull-right">
                 <a class="btn" href="#" onclick={function(_){remove_all_done()}}>
-                  <span class="icon icon-white icon-trash"/> Clear 
+                  <span class="icon icon-white icon-trash"/> Clear
                   <span id=#number_done class="number-done">0</span>
                   completed <span class="word-done">items</span>
                 </a>
@@ -133,7 +148,7 @@ module Todo {
             </div>
           </div>
           <div class="footer">Note: This is beta version. No guarentee your data wont be lost.</div>
-       </div> 
+       </div>
     }
 
    resource =
