@@ -9,14 +9,13 @@ module Admin {
         users = /users;
         Map.iter((function(_, y){
             items = /todo_items[y.username];
-            add_user_to_page(y.username, y.fullname,
-            Map.size(items))
+            add_user_to_page(y.username, y.fullname, y.is_oauth, Map.size(items))
         }), users)
     }
 
-    function add_user_to_page(string username,string fullname,int size) {
+    function add_user_to_page(string username, string fullname, bool is_oauth, int size) {
         line =
-            <tr><td>{username}</td><td>{fullname}</td><td>{size}</td></tr>;
+            <tr><td>{username}</td><td>{fullname}</td><td>{is_oauth}</td><td>{size}</td></tr>;
         Dom.transform([#user_list =+ line])
     }
 
@@ -26,6 +25,7 @@ module Admin {
             <tr>
               <th>Username</th>         
               <th>Fullname</th>        
+              <th>Is OAuth</th>        
               <th>Number Posts</th> 
             </tr>
           </thead>

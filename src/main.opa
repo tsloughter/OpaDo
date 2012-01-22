@@ -11,7 +11,8 @@ function with_request(f){
 urls = parser
     {Rule.debug_parse_string((function(s){Log.notice("URL", s)}))}
        Rule.fail -> error("")
-    | "/todos" result={Todo.resource}  -> with_request(result)
+    | "/todos?" result={Todo.resource}  -> with_request(result)
+    | "/connect?" data=(.*) -> User.connect(Text.to_string(data)) 
     | "/user"  result={User.resource}  -> with_request(result)
     | "/login" result={User.resource}  -> with_request(result)
     | "/admin" result={Admin.resource} -> with_request(result)
