@@ -88,7 +88,7 @@ module Todo {
     }
 
     function make_editable(string id, string value) {
-        line = <input id={id^"_input"} class="todo_content" onnewline={function(_){update_todo(id, Dom.get_value(#{id^"_input"}))}} value={ value } />
+        line = <input id={id^"_input"} class="xlarge todo_content" onnewline={function(_){update_todo(id, Dom.get_value(#{id^"_input"}))}} value={ value } />
         Dom.show(#{id^"_destroy"});
         _ = Dom.put_replace(#{id^"_todo"}, Dom.of_xhtml(line));
         update_counts()
