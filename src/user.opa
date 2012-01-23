@@ -156,9 +156,9 @@ module User {
                 <div class="content">
                    <h1>Login</h1>
                    {loginbox()}
-                   <div class="well">No account?
-                      <a href="/user/new"><strong>Sign Up</strong></a> or
-                      <a href="{login_url}"><img src="/resources/fb_connect.png" /></a>
+                   <div class="well">
+                      <p class="pull-left">No account? <a href="/user/new"><strong>Sign Up</strong></a></p>
+                      <a class="pull-right" href="{login_url}"><img src="/resources/fbconnect.png" /></a>
                    </div>
                 </div>
                 {footer()}
@@ -195,8 +195,10 @@ module User {
                          login(Dom.get_value(#username), Dom.get_value(#password))
                      }}>Create</button>
              </form>
-             <div class="well">Already user? <a href="/login"><strong>Login here</strong></a> or
-             <a href="{login_url}"><img src="/resources/fb_connect.png" /></a></div>
+             <div class="well">
+                  <p class="pull-left">Already user? <a href="/login"><strong>Login here</strong></a></p>
+                  <a class="pull-right" href="{login_url}"><img src="/resources/fbconnect.png" /></a>
+             </div>
            </div>
            {footer()}
        </>
