@@ -32,8 +32,8 @@ FBA = FbAuth(OpaIntro1.config)
 FBG = FbGraph
 redirect = "http://opado.org/connect"
 
-@abstract type User.password = string
-@abstract type User.ref = string
+abstract type User.password = string
+abstract type User.ref = string
 
 type User.t = { string username
               , string fullname
@@ -354,10 +354,11 @@ module User {
     }
 
     resource =
-       (Parser.general_parser((http_request -> resource))) parser
-       | "/new" -> function(_req) { mypage("New User",new()) }
-       | "/edit" -> function(_req) { edit() }
-       | "/view/" login = (.*) -> function(_req) { view(Text.to_string(login)) }
-       | .* -> function(_req) { start() }
+       (Parser.general_parser((http_request -> resource))) parser {
+       | "/new" : function(_req) { mypage("New User",new()) }
+       | "/edit" : function(_req) { edit() }
+       | "/view/" login = (.*) : function(_req) { view(Text.to_string(login)) }
+       | .* : function(_req) { start() }
+       }
 }
 

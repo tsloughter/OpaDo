@@ -154,6 +154,8 @@ module Todo {
     }
 
    resource =
-    (Parser.general_parser((http_request -> resource))) parser
-      (.*) -> function(_req){todos()}
+    (Parser.general_parser((http_request -> resource))) parser {
+      (.*) : function(_req){todos()}
+    }
+      
 }

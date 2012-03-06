@@ -33,7 +33,8 @@ module Admin {
     }
 
     resource =
-      (Parser.general_parser((http_request -> 'toto))) parser (.*) -> function(_req){
+      (Parser.general_parser((http_request -> 'toto))) parser { (.*) : function(_req){
          mypage("Admin", admin())
           }
+        }
 }
