@@ -79,12 +79,18 @@ module Todo {
     }
 
     function add_todo_to_page(string id, string value, bool is_done) {
+        done = if (is_done) "done" else ""
+        checkbox = if (is_done) {
+            <input checked="yes"  class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
+          }else{
+            <input class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
+          }
         line =
-          <li><div class="todo {if (is_done) "done" else ""}" id={ id }>
+          <li><div class="todo {done}" id={ id }>
             <div class="display">
               <span id={id^"_destroy"} class="todo_destroy icon icon-remove" onclick={function(_){remove_item(id)}}></span>
-              <input class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
-              <div id={id^"_todo"} class="todo_content" onclick={function(_){make_editable(id, value)}}>{ value }</div>
+              {checkbox}
+              <div id={id^"_todo"} class="todo_content" onclick={function(_){ if (is_done) { }else{ make_editable(id, value) }}}>{ value }</div>
             </div>
           </div></li>
         Dom.transform([#todo_list =+ line]);
