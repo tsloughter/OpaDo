@@ -1,16 +1,10 @@
-package opado.main
-
-import opado.user
-import opado.admin
-import opado.todo
-
 function with_request(f){
   f(ThreadContext.get({current}).request ? error("no request"))
 }
 
 urls = parser {
-    {Rule.debug_parse_string((function(s){Log.notice("URL", s)}))}
-       Rule.fail -> error("")
+    //Rule.debug_parse_string((function(s){Log.notice("URL", s)}))
+    //Rule.fail : error("Error")
     | "/todos?" result={Todo.resource} : with_request(result)
     | "/connect?" data=(.*)            : User.connect(Text.to_string(data)) 
     | "/user"  result={User.resource}  : with_request(result)

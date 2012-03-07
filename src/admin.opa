@@ -1,15 +1,16 @@
-package opado.admin
-
-import opado.ui
-import opado.todo
-import opado.user
+import stdlib.database.mongo
 
 module Admin {
     function add_users() {
-        users = /users;
-        Map.iter((function(_, y){
-            items = /todo_items[y.username];
-            add_user_to_page(y.username, y.fullname, y.is_oauth, Map.size(items))
+        dbset(User.t) users = /opado/users; 
+        // dbset(User.t) users = /opado/users; // with Opa 9.0.1
+        users = DbSet.to_list(users)
+        // it = DbSet.iterator(users); // with Opa 9.0.1
+        List.iter((function(user){
+            useref = user.ref;
+            dbset(Todo.t) items = /opado/todos[ useref == useref ];
+            items = DbSet.to_list(items);
+            add_user_to_page(user.username, user.fullname, user.is_oauth, List.length(items))
         }), users)
     }
 

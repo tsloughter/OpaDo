@@ -2,8 +2,6 @@
  * @author Ida Swarczewskaja
 **/
 
-package opado.ui
-
 import stdlib.themes.bootstrap.core
 
 /*module Desktop {
