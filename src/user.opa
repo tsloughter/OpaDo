@@ -68,7 +68,7 @@ module User {
 
         match (user) {
             case { none }: void
-               /opado/users[~{ ref }] <- { ref : ref, username: ref, password : Crypto.Hash.sha2(password), is_oauth : is_oauth}; // not necessary to specify default values
+               /opado/users[~{ ref }] <- { ref : ref, username: ref, password : Crypto.Hash.md5(password), is_oauth : is_oauth}; // not necessary to specify default values
             default: void
         }
     }
@@ -90,7 +90,7 @@ module User {
         user = User_data.get(useref);
         match (user) {
           case { some : u }:
-           if (u.is_oauth == false && u.password == Crypto.Hash.sha2(password)) {
+           if (u.is_oauth == false && u.password == Crypto.Hash.md5(password)) {
                UserContext.change(function(_){
                    { logged :User_data.mk_ref(login) }
                  },state)
