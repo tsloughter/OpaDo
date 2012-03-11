@@ -1,11 +1,9 @@
-/*
+/*:54
  * USER.OPA
  *
  * @author Tristan Sloughter
  * @author Matthieu Guffroy
 **/
-
-package opado.user
 
 import stdlib.crypto
 import stdlib.web.client
@@ -13,10 +11,15 @@ import stdlib.core.web.core
 import stdlib.widgets.core
 import stdlib.widgets.loginbox
 import stdlib.widgets.formbuilder
-import stdlib.{themes.bootstrap, widgets.bootstrap}
+import stdlib.{widgets.bootstrap}
 import stdlib.apis.{facebook, facebook.auth, facebook.graph}
 
-import opado.ui
+/**
+database stringmap(stringmap(todo_item)) /todo_items
+database /todo_items[_][_]/done = false
+database User.map(User.t) /users
+database /users[_]/is_oauth = false
+*/
 
 // DATA
 
@@ -32,40 +35,23 @@ FBA = FbAuth(OpaIntro1.config)
 FBG = FbGraph
 redirect = "http://opado.org/connect"
 
-@abstract type User.password = string
-@abstract type User.ref = string
-
-type User.t = { string username
-              , string fullname
-              , User.password password
-              , bool is_oauth
-              }
-
-type User.status = {User.ref logged} or {unlogged}
-
-type User.info = UserContext.t(User.status)
-type User.map('a) = ordered_map(User.ref, 'a, String.order)
-
-database User.map(User.t) /users
-database /users[_]/is_oauth = false
-
-
 module User_data {
     function User.ref mk_ref(string login){
         String.to_lower(login)
     }
 
-    function string ref_to_string(User.ref login){
-        login
+    function string ref_to_string(User.ref ref){
+        ref
     }
 
-    function void save(User.ref ref,User.t user){
-        @/users[ref] <- user
+    function void save(User.t user){
+        /opado/users[{ref : user.ref}] <- user
     }
 
     function option(User.t) get(User.ref ref){
-        ?/users[ref]
+        ?/opado/users[~{ref}]
     }
+
 }
 
 module User {
@@ -77,20 +63,16 @@ module User {
     }
 
     function user_create(username, password, is_oauth) {
-        useref = User_data.mk_ref(username);
-        user = User_data.get(useref);
+        ref = User_data.mk_ref(username);
+        user = User_data.get(ref);
 
         match (user) {
-            case { none }:
-              user =
-                  (User.t) { username: useref
-                           , fullname : ""
-                           , password : Crypto.Hash.sha2(password)
-                           , is_oauth : is_oauth };
-              @/users[username] <- user
+            case { none }: void
+               /opado/users[~{ ref }] <- { ref : ref, username: ref, password : Crypto.Hash.md5(password), is_oauth : is_oauth}; // not necessary to specify default values
             default: void
         }
     }
+
 
     function get_status() {
         UserContext.execute((function(a){a}), state)
@@ -108,7 +90,7 @@ module User {
         user = User_data.get(useref);
         match (user) {
           case { some : u }:
-           if (u.is_oauth == false && u.password == Crypto.Hash.sha2(password)) {
+           if (u.is_oauth == false && u.password == Crypto.Hash.md5(password)) {
                UserContext.change(function(_){
                    { logged :User_data.mk_ref(login) }
                  },state)
@@ -224,11 +206,11 @@ module User {
                 <p>
                   Username : <input id=#{username_id}
                   onchange={function(_){
-                      User_data.save(r, {user with username : Dom.get_value(#{username_id})})
+                      User_data.save({user with ref : r, username : Dom.get_value(#{username_id})})
                   }}
                   value={user.username} /><br />
                   Fullname   :  <input id=#{fullname_id}
-                  onchange={function(_){ User_data.save(r, {user with fullname : Dom.get_value(#{fullname_id})})
+                  onchange={function(_){ User_data.save({user with ref : r, fullname : Dom.get_value(#{fullname_id})})
               }}
               value={user.fullname} />
               </p>
@@ -354,10 +336,11 @@ module User {
     }
 
     resource =
-       (Parser.general_parser((http_request -> resource))) parser
-       | "/new" -> function(_req) { mypage("New User",new()) }
-       | "/edit" -> function(_req) { edit() }
-       | "/view/" login = (.*) -> function(_req) { view(Text.to_string(login)) }
-       | .* -> function(_req) { start() }
+       (Parser.general_parser((http_request -> resource))) parser {
+       | "/new" : function(_req) { mypage("New User",new()) }
+       | "/edit" : function(_req) { edit() }
+       | "/view/" login = (.*) : function(_req) { view(Text.to_string(login)) }
+       | .* : function(_req) { start() }
+       }
 }
 

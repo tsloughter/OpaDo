@@ -1,17 +1,4 @@
-package opado.todo
-
-import opado.user
-import opado.ui
 import stdlib.web.client
-
-type todo_item = {
-    string value,
-    bool done,
-    string created_at
-}
-
-database stringmap(stringmap(todo_item)) /todo_items
-database /todo_items[_][_]/done = false
 
 module Todo {
     function update_counts() {
@@ -32,11 +19,8 @@ module Todo {
     }
 
     exposed @async function db_make_done(string id) {
-        username = User.get_username();
-        items = /todo_items[username];
-        item = Option.get(StringMap.get(id, items));
-        @/todo_items[username] <-
-          StringMap.add(id, {item with done : true}, items)
+        useref = User.get_username();
+        /opado/todos[~{ id }] <- { done : true };
     }
 
     function remove_item(string id) {
@@ -46,9 +30,9 @@ module Todo {
     }
 
     exposed @async function db_remove_item(string id) {
-        username = User.get_username();
-        items = /todo_items[username];
-        @/todo_items[username] <- StringMap.remove(id, items)
+        useref = User.get_username();
+        Db.remove(@/opado/todos[~{ id }]);
+        void
     }
 
     @async function remove_all_done() {
@@ -62,17 +46,16 @@ module Todo {
         add_todo_to_page(id, x, false)
     }
 
-    exposed @async function db_add_todo(string id, string x) {
-        username = User.get_username();
-        items = /todo_items[username];
-        @/todo_items[username] <-
-        StringMap.add(id, { value : x, done : false, created_at : "" }, items)
+    exposed @async function db_add_todo(string id, string value) {
+        useref = User.get_username();
+        /opado/todos[~{ id }] <- { id : id, useref : useref, value : value } // not necessary to specify default values
     }
 
     exposed function add_todos() {
-        username = User.get_username();
-        items = /todo_items[username];
-        StringMap.iter((function(x,y){add_todo_to_page(x, y.value, y.done)}), items)
+        useref = User.get_username();
+        dbset(Todo.t, _) items = /opado/todos[ useref == useref];
+        it = DbSet.iterator(items);
+        Iter.iter((function(item){add_todo_to_page(item.id, item.value, item.done)}), it)
     }
 
     function update_todo(string id, string value) {
@@ -95,12 +78,18 @@ module Todo {
     }
 
     function add_todo_to_page(string id, string value, bool is_done) {
+        done = if (is_done) "done" else ""
+        checkbox = if (is_done) {
+            <input checked="yes"  class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
+          }else{
+            <input class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
+          }
         line =
-          <li><div class="todo {if (is_done) "done" else ""}" id={ id }>
+          <li><div class="todo {done}" id={ id }>
             <div class="display">
               <span id={id^"_destroy"} class="todo_destroy icon icon-remove" onclick={function(_){remove_item(id)}}></span>
-              <input class="check" type="checkbox" onclick={function(_){make_done(id)}}/>
-              <div id={id^"_todo"} class="todo_content" onclick={function(_){make_editable(id, value)}}>{ value }</div>
+              {checkbox}
+              <div id={id^"_todo"} class="todo_content" onclick={function(_){ if (is_done) { }else{ make_editable(id, value) }}}>{ value }</div>
             </div>
           </div></li>
         Dom.transform([#todo_list =+ line]);
@@ -154,6 +143,8 @@ module Todo {
     }
 
    resource =
-    (Parser.general_parser((http_request -> resource))) parser
-      (.*) -> function(_req){todos()}
+    (Parser.general_parser((http_request -> resource))) parser {
+      (.*) : function(_req){todos()}
+    }
+      
 }
