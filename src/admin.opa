@@ -1,16 +1,15 @@
-package opado.admin
-
-import opado.ui
-import opado.todo
-import opado.user
+import stdlib.database.mongo
 
 module Admin {
     function add_users() {
-        users = /users;
-        Map.iter((function(_, y){
-            items = /todo_items[y.username];
-            add_user_to_page(y.username, y.fullname, y.is_oauth, Map.size(items))
-        }), users)
+        dbset(User.t, _) users = /opado/users; 
+        it = DbSet.iterator(users);
+        Iter.iter((function(user){
+            useref = user.ref;
+            dbset(Todo.t, _) items = /opado/todos[ useref == useref ];
+            it = DbSet.iterator(items);
+            add_user_to_page(user.username, user.fullname, user.is_oauth, Iter.count(it))
+        }), it)
     }
 
     function add_user_to_page(string username, string fullname, bool is_oauth, int size) {
@@ -33,7 +32,8 @@ module Admin {
     }
 
     resource =
-      (Parser.general_parser((http_request -> 'toto))) parser (.*) -> function(_req){
+      (Parser.general_parser((http_request -> 'toto))) parser { (.*) : function(_req){
          mypage("Admin", admin())
           }
+        }
 }

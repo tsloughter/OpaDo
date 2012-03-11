@@ -150,6 +150,8 @@ ul#todo_list .display:hover .icon.icon-remove {display:inline-block;}
 
 .todo_content {padding:0 3px;font-size:18px; line-height:22px;color:#6C6B66;}
 
+.done .todo_content{text-decoration: line-through;}
+
 /* Edit input */
 #todo_list .editing .display, #todo_list .edit {display: none;}
 #todo_list .editing .edit {display: block;}
