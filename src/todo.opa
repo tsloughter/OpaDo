@@ -31,8 +31,7 @@ module Todo {
 
     exposed @async function db_remove_item(string id) {
         useref = User.get_username();
-        // Not implemented in Opa 9.0.0 for mongo backend
-        // Db.remove(@/opado/todos[~{ id }]);
+        Db.remove(@/opado/todos[~{ id }]);
         void
     }
 
@@ -54,9 +53,9 @@ module Todo {
 
     exposed function add_todos() {
         useref = User.get_username();
-        dbset(Todo.t) items = /opado/todos[ useref == useref];
-        items = DbSet.to_list(items);
-        List.iter((function(item){add_todo_to_page(item.id, item.value, item.done)}), items)
+        dbset(Todo.t, _) items = /opado/todos[ useref == useref];
+        it = DbSet.iterator(items);
+        Iter.iter((function(item){add_todo_to_page(item.id, item.value, item.done)}), it)
     }
 
     function update_todo(string id, string value) {

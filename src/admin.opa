@@ -2,16 +2,14 @@ import stdlib.database.mongo
 
 module Admin {
     function add_users() {
-        dbset(User.t) users = /opado/users; 
-        // dbset(User.t) users = /opado/users; // with Opa 9.0.1
-        users = DbSet.to_list(users)
-        // it = DbSet.iterator(users); // with Opa 9.0.1
-        List.iter((function(user){
+        dbset(User.t, _) users = /opado/users; 
+        it = DbSet.iterator(users);
+        Iter.iter((function(user){
             useref = user.ref;
-            dbset(Todo.t) items = /opado/todos[ useref == useref ];
-            items = DbSet.to_list(items);
-            add_user_to_page(user.username, user.fullname, user.is_oauth, List.length(items))
-        }), users)
+            dbset(Todo.t, _) items = /opado/todos[ useref == useref ];
+            it = DbSet.iterator(items);
+            add_user_to_page(user.username, user.fullname, user.is_oauth, Iter.count(it))
+        }), it)
     }
 
     function add_user_to_page(string username, string fullname, bool is_oauth, int size) {

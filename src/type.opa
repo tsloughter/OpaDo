@@ -24,8 +24,7 @@ type Todo.t = {
     string created_at
 }
 
-//database opado { // with Opa 9.0.0
-database opado {
+database opado @mongo {
     User.t /users[{ref}]
     /users[_]/is_oauth = false
     Todo.t /todos[{id}]
